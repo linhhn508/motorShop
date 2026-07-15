@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>My Motor Shop</title>
+    <link rel="icon" type="image/x-icon" href="image/assets/prototype.ico">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js" defer></script>
+</head>
+
+<body>
+    <header id="header">
+        <div id="search-container">
+            <a href="/">
+                <img src="image/assets/prototype.png" alt="My Motor Shop">
+            </a>
+            <input type="text" placeholder="Input something.." name="search">
+            <button type="submit"><i class="fa fa-search"></i>Search</button>
+        </div>
+        <div id="nav-container">
+            <nav>
+                <a href="/">Homepage</a>
+                <a href="/">Blog</a>
+                <a href="/">Contact</a>
+                <a href="/">Feedback</a>
+                <a href="/">Search</a>
+            </nav>
+        </div>
+        <div id="header-banner">
+            <img src="image/assets/capture.png">
+            <ul>
+                <p>GIAO HÀNG TOÀN QUỐC<br>Shipcode theo yêu cầu</p>
+                <p>ĐIỆN THOẠI<br>036 591 3732</p>
+                <p>CHAT VỚI CHÚNG TÔI<br>036 591 3732</p>
+                <p>MUA BÁN, KÝ GỬI<br>Xe và các sản phẩm liên quan</p>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="menu" class="menu"></div>
+            <div class="content">
+                <h3>SẢN PHẨM MỚI NHẤT</h3>
+                <div id="product_list" class="product-grid"></div>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li><button id="prev-btn" disabled>&laquo; Previous</button></li>
+                        <!-- Dynamic page numbers will be injected here -->
+                        <li id="page-numbers"></li>
+                        <li><button id="next-btn">Next &raquo;</button></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div id ="footer-container">
+            <img src="image/assets/background.jpg" >
+            <div id ="top-left">
+                <ul>
+                    <h3>THÔNG TIN LIÊN HỆ</h3>
+                    <p>ĐỊA CHỈ: 345/75 Phan Xích Long, Phường Cầu Kiệu, Phú Nhuận, TPHCM</p>
+                    <p>GIỜ MỞ CỬA:  9:30 AM - 6 PM</p>
+                    <p> HOTLINE TƯ VẤN: 036 591 3732</p>
+                    <p>Email: example@example.com</p>
+                </ul>
+            </div>
+            <div id ="top-right">
+                <ul>
+                    <h3>HÌNH THỨC THANH TOÁN</h3>
+                    <p>TECHCOMBANK - NGÂN HÀNG THƯƠNG MẠI CỔ</p>
+                    <p>PHẦN KĨ THƯƠNG VIỆT NAM</p>
+                    <p>Chủ TK: HO HOANG LINH</p>
+                    <p>STK: 777777777777777777</p>
+                </ul>
+            </div>
+        </div>
+    </footer> 
+</body>
+
+</html>

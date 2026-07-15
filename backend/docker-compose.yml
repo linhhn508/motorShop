@@ -1,0 +1,30 @@
+services:
+  backend_service:
+    image: backend:latest
+    build:
+      context: .
+      dockerfile: ./image/service/Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app
+      - MONGODB_HOST=mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - backend_network
+
+  mongodb:
+    image: mongodb:latest
+    build: 
+      context: .
+      dockerfile: ./image/mongodb/Dockerfile
+    container_name: mongodb
+    networks:
+      - backend_network
+
+
+networks:
+  backend_network:
+    driver: bridge
