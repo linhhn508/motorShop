@@ -1,0 +1,154 @@
+# My Motor Shop
+
+A full-stack web application for a motorcycle parts and accessories store. The frontend displays a product catalog with category filtering and pagination, backed by a Flask REST API that reads from a MongoDB database. All services are containerised with Docker.
+
+---
+
+## Project Structure
+
+```
+webapp_project/
+├── backend/                  # Flask REST API
+│   ├── app/
+│   │   ├── __init__.py       # Application factory (create_app)
+│   │   ├── main/             # Main blueprint  →  GET /
+│   │   └── products/         # Products blueprint  →  GET|POST|PUT|DELETE /api/products/
+│   ├── image/
+│   │   ├── mongodb/          # MongoDB Docker image + seed data
+│   │   │   ├── Dockerfile
+│   │   │   ├── mongo-init.sh # Imports products.json on first start
+│   │   │   └── products.json # Seed data
+│   │   └── service/          # Flask service Docker image
+│   │       └── Dockerfile
+│   ├── docker-compose.yml    # Orchestrates backend + MongoDB
+│   └── pyproject.toml        # Python project metadata & dependencies
+│
+└── frontend/                 # Static web UI served by Nginx
+    ├── index.html            # Main shop page
+    ├── main.js               # Fetches products from API, renders UI
+    ├── styles.css            # Stylesheet
+    ├── Dockerfile            # Nginx image
+    └── image/                # Static assets & product images
+```
+
+---
+
+## Tech Stack
+
+| Layer     | Technology                          |
+|-----------|-------------------------------------|
+| Frontend  | HTML / CSS / Vanilla JavaScript     |
+| Web server| Nginx 1.27 (Alpine)                 |
+| Backend   | Python 3.12, Flask 3.x, flask-cors  |
+| Database  | MongoDB 7.0                         |
+| Packaging | [uv](https://github.com/astral-sh/uv) |
+| Containers| Docker & Docker Compose             |
+
+---
+
+## API Endpoints
+
+Base URL: `http://<host>:5000`
+
+| Method   | Path                      | Description               |
+|----------|---------------------------|---------------------------|
+| `GET`    | `/`                       | Main blueprint health check |
+| `GET`    | `/test/`                  | Factory pattern test page |
+| `GET`    | `/api/products/`          | List all products         |
+| `GET`    | `/api/products/categories/` | List distinct categories |
+| `GET`    | `/api/products/info/`     | Product info *(stub)*     |
+| `POST`   | `/api/products/add/`      | Add a product *(stub)*    |
+| `PUT`    | `/api/products/update/`   | Update a product *(stub)* |
+| `DELETE` | `/api/products/remove/`   | Remove a product *(stub)* |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/)
+
+---
+
+### Option 1 — Docker Compose (recommended)
+
+Starts the Flask backend and MongoDB together on an isolated network.
+
+```bash
+cd backend
+docker compose up --build
+```
+
+- Backend API: `http://localhost:5000`
+- MongoDB is only accessible internally to the backend service.
+
+Then start the frontend separately:
+
+```bash
+cd frontend
+docker build -t shop_web .
+docker run -d -p 8000:80 --name frontend shop_web
+```
+
+- Frontend: `http://localhost:8000`
+
+> **Note:** The frontend calls the backend at `http://192.168.58.128:5000` by default (see `frontend/main.js`). Update that URL to match your host if needed.
+
+---
+
+### Option 2 — Manual Docker builds
+
+```bash
+# 1. MongoDB
+docker build -f backend/image/mongodb/Dockerfile backend/ -t custom_mongo
+docker run -d -p 27017:27017 --name mongodb custom_mongo
+
+# 2. Backend (set MONGODB_HOST to the IP where MongoDB is reachable)
+docker build -f backend/image/service/Dockerfile backend/ -t backend
+docker run -d -p 5000:5000 --name backend -e MONGODB_HOST=<mongodb-host>:27017 backend
+
+# 3. Frontend
+docker build -t shop_web frontend/
+docker run -d -p 8000:80 --name frontend shop_web
+```
+
+---
+
+### Option 3 — Local development (backend only)
+
+```bash
+cd backend
+pip install uv
+uv sync
+MONGODB_HOST=localhost:27017 uv run flask run
+```
+
+---
+
+## Database
+
+- **Database:** `my_web_app`
+- **Collection:** `products`
+- The MongoDB image automatically seeds the database on first startup using `mongoimport` with `backend/image/mongodb/products.json`.
+
+Each product document follows this schema:
+
+```json
+{
+  "id": 1,
+  "name": "Product name",
+  "price": 197,
+  "image": "image/product/product1.png",
+  "category": "Category name"
+}
+```
+
+---
+
+## Environment Variables
+
+| Variable       | Service  | Description                                  | Default (compose) |
+|----------------|----------|----------------------------------------------|-------------------|
+| `MONGODB_HOST` | Backend  | MongoDB host and port (`host:port`)          | `mongodb`         |
+| `FLASK_APP`    | Backend  | Flask application entry point                | `app`             |
