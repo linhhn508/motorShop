@@ -3,14 +3,14 @@ const categoryList = [];
 
 
 const category = document.getElementById("menu");
-function displayCategoryMenu() {
+function displayCategoryMenu(categories) {
     let categoryHTML = `<ul>
         <li class="menu-title">Danh mục sản phẩm</li>`;
 
-    for (let i = 0; i < product_info.length; i++) {
-        if (!categoryList.includes(product_info[i].category)) {
-            categoryList.push(product_info[i].category);
-            categoryHTML += `<li><a href="/">${product_info[i].category}</a></li>`;
+    for (let i = 0; i < categories.length; i++) {
+        if (!categoryList.includes(categories[i])) {
+            categoryList.push(categories[i]);
+            categoryHTML += `<li><a href="/">${categories[i]}</a></li>`;
         }
     }
 
@@ -105,7 +105,6 @@ async function getProductList() {
     const data = await response.json();
     console.log(data);
     product_info = data;
-        displayCategoryMenu();
         displayPage(currentPage);
         updatePagination();
         updateButtonStates();
@@ -114,4 +113,23 @@ async function getProductList() {
   }
 }
 
+async function getCategoryList() {
+  try {
+    const response = await fetch('http://192.168.58.128:5000/api/products/categories/');
+
+    if (!response.ok) {
+      throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
+    }
+
+    const categoryList = await response.json();
+    displayCategoryMenu(categoryList);
+        
+  } catch (error) {
+    console.error('Có lỗi xảy ra:', error);
+  }
+}
+
+
+
 getProductList()
+getCategoryList()
