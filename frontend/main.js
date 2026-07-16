@@ -96,7 +96,7 @@ nextBtn.addEventListener("click", () => {
 
 async function getProductList() {
   try {
-    const response = await fetch('http://192.168.58.128:5000/api/products/');
+    const response = await fetch('/api/products/');
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
@@ -115,7 +115,7 @@ async function getProductList() {
 
 async function getCategoryList() {
   try {
-    const response = await fetch('http://192.168.58.128:5000/api/products/categories/');
+    const response = await fetch('/api/products/categories/');
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);

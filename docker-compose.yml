@@ -12,6 +12,7 @@ services:
       - MONGODB_HOST=mongodb
     depends_on:
       - mongodb
+      - minio
     networks:
       - backend_network
 
@@ -37,6 +38,20 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     volumes:
       - ./infra/minio/product:/home/image   # host image folder → container
+    networks:
+      - backend_network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./infra/frontend/Dockerfile
+    container_name: frontend
+    ports:
+      - "8000:80"
+    depends_on:
+      - backend_service
+      - minio
+      - mongodb
     networks:
       - backend_network
 
