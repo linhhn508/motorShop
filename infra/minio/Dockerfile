@@ -5,7 +5,7 @@ ARG MINIO_ROOT_PASSWORD
 
 WORKDIR /data
 
-COPY ./image/minio/minio-init.sh /usr/bin/minio-init.sh
+COPY ./minio-init.sh /usr/bin/minio-init.sh
 
 RUN chmod +x /usr/bin/minio-init.sh
 

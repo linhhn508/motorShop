@@ -13,11 +13,9 @@ done
 
 # Create buckets (no-op if they already exist)
 mc mb --ignore-existing local/product-image
-mc mb --ignore-existing local/blog-image
 
 # Set public read access
 mc anonymous set public local/product-image
-mc anonymous set public local/blog-image
 
 # Seed product images from the bind-mounted host directory
 mc cp --recursive /home/image/ local/product-image/

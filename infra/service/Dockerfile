@@ -9,10 +9,10 @@ WORKDIR /web-service
 
 RUN pip install uv
 
-COPY pyproject.toml uv.lock ./
+COPY backend/pyproject.toml backend/uv.lock ./
 
 RUN uv sync
 
-COPY app ./app
+COPY backend/app ./app
 
 CMD ["uv", "run", "--", "flask", "run", "-h", "0.0.0.0", "-p", "5000"]
