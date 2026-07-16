@@ -1,17 +1,11 @@
 from app.products import bp
-import os
 from flask import jsonify
-from pymongo import MongoClient
-
-MONGODB_HOST = os.environ["MONGODB_HOST"]
-client = MongoClient(MONGODB_HOST)
-db = client["my_web_app"]
-collection = db["products"]
+from app import mongo
 
 @bp.route('/', methods=['GET'])
 def index():
     productList = []
-    productQuery = collection.find({}, {"_id": False})
+    productQuery = mongo.db.products.find({}, {"_id": False})
 
     for product in productQuery:
         productList.append(product)
@@ -21,8 +15,7 @@ def index():
 
 @bp.route('/categories/', methods=['GET'])
 def categories():
-    categoryList = []
-    categoryList = collection.distinct("category")
+    categoryList = mongo.db.products.distinct("category")
     return jsonify(categoryList)
 
 @bp.route('/info/', methods=['GET'])
