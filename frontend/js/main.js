@@ -42,7 +42,7 @@ function displayPage(page) {
                     <a href="/product/${product.id}">
                         <img src="/image/product/${product.id}/thumbnail.png" alt="${product.name}">
                         <h4>${product.name}</h4></a>
-                    <p>$${product.price}</p>
+                    <p>${product.price} VNĐ</p>
                 </div>
             </li>
         `;
@@ -103,7 +103,6 @@ async function getProductList() {
     }
 
     const data = await response.json();
-    console.log(data);
     product_info = data;
         displayPage(currentPage);
         updatePagination();

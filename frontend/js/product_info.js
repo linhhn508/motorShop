@@ -85,7 +85,7 @@ async function getProductInfo() {
     const response = await fetch(`/api/products/${productId}/info`);
 
     if (response.status === 404) {
-      displayError(`Sản phẩm "<strong>${productId}</strong>" không tồn tại.`);
+      displayError("Sản phẩm không tồn tại.");
       return;
     }
 
