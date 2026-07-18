@@ -37,7 +37,7 @@ webapp_project/
 │   ├── main.js               # Fetches products from API, renders UI
 │   ├── styles.css            # Stylesheet
 │   ├── nginx.conf            # Nginx config (static files + reverse proxies)
-│   └── image/assets/         # Static assets bundled into the Nginx image
+│   └── assets/               # Static assets bundled into the Nginx image
 │
 └── infra/                    # Docker build contexts for each service
     ├── frontend/

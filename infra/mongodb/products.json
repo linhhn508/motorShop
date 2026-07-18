@@ -3,54 +3,72 @@
         "id": "yen-doi-triump-speed-400",
         "name": "Yên đôi TRIUMP SPEED 400",
         "price": 197,
-        "category": "Yên"
+        "category": "Yên",
+        "stock": 10,
+        "detail": "Yên đôi cho xe Triumph Speed 400, chất liệu da cao cấp, thiết kế thể thao, phù hợp cho cả người lái và hành khách."
     },
     {
         "id": "xi-nhan-led-koso",
         "name": "Xi nhan LED Koso",
         "price": 363,
-        "category": "Đèn"
+        "category": "Đèn",
+        "stock": 3,
+        "detail": "Xi nhan LED Koso, thiết kế hiện đại, ánh sáng mạnh, dễ lắp đặt."
     },
     {
         "id": "po-akrapovic-r1",
         "name": "Pô Akrapovic R1",
         "price": 358,
-        "category": "Pô xe"
+        "category": "Pô xe",
+        "stock": 5,
+        "detail": "Pô Akrapovic cho xe R1, chất liệu thép không gỉ, âm thanh thể thao, tăng hiệu suất động cơ."
     },
     {
         "id": "lop-michelin-city-grip-2",
         "name": "Lốp Michelin City Grip 2",
         "price": 244,
-        "category": "Bánh & Lốp"
+        "category": "Bánh & Lốp",
+        "stock": 1,
+        "detail": "Lốp Michelin City Grip 2, độ bền cao, bám đường tốt, phù hợp cho xe tay ga."
     },
     {
         "id": "heo-dau-brembo-4-pis",
         "name": "Heo dầu Brembo 4 pis",
         "price": 118,
-        "category": "Phanh & Thắng"
+        "category": "Phanh & Thắng",
+        "stock": 4,
+        "detail": "Heo dầu Brembo 4 pis, hiệu suất phanh cao, thiết kế chắc chắn, dễ lắp đặt."
     },
     {
         "id": "phuoc-sau-ohlins-binh-dau",
         "name": "Phuộc sau Ohlins bình dầu",
         "price": 214,
-        "category": "Phuộc & Giảm xóc"
+        "category": "Phuộc & Giảm xóc",
+        "stock": 1,
+        "detail": "Phuộc sau Ohlins bình dầu, giảm xóc êm ái, tăng cường khả năng vận hành và ổn định cho xe."
     },
     {
         "id": "guong-gu-tay-lai-crg",
         "name": "Gương gù tay lái CRG",
         "price": 444,
-        "category": "Gương & Kính"
+        "category": "Gương & Kính",
+        "stock": 3,
+        "detail": "Gương gù tay lái CRG, thiết kế hiện đại, dễ lắp đặt, tăng tính thẩm mỹ cho xe."
     },
     {
         "id": "gac-chan-nhom-biker",
         "name": "Gác chân nhôm Biker",
         "price": 459,
-        "category": "Đồ chơi CNC & Kiểng"
+        "category": "Đồ chơi CNC & Kiểng",
+        "stock": 8,
+        "detail": "Gác chân nhôm Biker, chất liệu nhôm cao cấp, thiết kế thể thao, tăng sự thoải mái khi lái xe."
     },
     {
         "id": "nhong-sen-dia-did-vang-428hd",
         "name": "Nhông sên dĩa DID vàng 428HD",
         "price": 442,
-        "category": "Truyền động"
+        "category": "Truyền động",
+        "stock": 14,
+        "detail": "Nhông sên dĩa DID vàng 428HD, độ bền cao, truyền động mượt mà, phù hợp cho nhiều loại xe."
     }
 ]

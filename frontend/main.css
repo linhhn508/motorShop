@@ -3,6 +3,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 main {
@@ -49,6 +50,7 @@ header {
   font-size: 17px;
   border: none;
   width: 350px;
+  max-width: 40vw;
 }
 
 #search-container button {
@@ -240,6 +242,7 @@ footer {
 
 .product-item img{
     width: 250px;
+    max-width: 100%;
     height: auto;
 }
 
