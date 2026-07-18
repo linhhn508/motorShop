@@ -39,7 +39,7 @@ function displayPage(page) {
         productGrid.innerHTML += `
             <li style="list-style: none;">
                 <div class="product-item">
-                    <a href="/">
+                    <a href="/product/${product.id}">
                         <img src="/image/product/${product.id}/thumbnail.png" alt="${product.name}">
                         <h4>${product.name}</h4></a>
                     <p>$${product.price}</p>
@@ -96,7 +96,7 @@ nextBtn.addEventListener("click", () => {
 
 async function getProductList() {
   try {
-    const response = await fetch('/api/products/');
+    const response = await fetch('/api/products/all/');
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);

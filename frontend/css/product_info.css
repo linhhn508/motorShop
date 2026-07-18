@@ -81,6 +81,7 @@ PRODUCT INFO HEADER
     color:#ffffff;
     border: none;
     padding: 10px 20px;
+    width: 100%;
     cursor: pointer;
 }
 

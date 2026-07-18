@@ -174,8 +174,8 @@ footer {
 
 .container div.menu {
     grid-area: menu;
-    border: 1px solid #000000;
-    padding: 14px;
+    /* border: 1px solid #000000; */
+    /* padding: 14px; */
     text-align: center;
     margin-right: 25px;
 }
