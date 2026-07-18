@@ -2,7 +2,7 @@ from app.products import bp
 from flask import jsonify
 from app import mongo
 
-@bp.route('/', methods=['GET'])
+@bp.route('/all/', methods=['GET'])
 def index():
     productList = []
     productQuery = mongo.db.products.find({}, {"_id": False})
@@ -12,15 +12,19 @@ def index():
     
     return jsonify(productList)
 
+@bp.route('/<product_id>/info', methods=['GET'])
+def get_product(product_id):
+    product = mongo.db.products.find_one({"id": product_id}, {"_id": False})
+    if product:
+        return jsonify(product)
+    else:
+        return jsonify({"error": "Product not found"}), 404
+
 
 @bp.route('/categories/', methods=['GET'])
 def categories():
     categoryList = mongo.db.products.distinct("category")
     return jsonify(categoryList)
-
-@bp.route('/info/', methods=['GET'])
-def info():
-    return 'Here where you get the product info'
 
 @bp.route('/add/', methods=['POST'])
 def add():
