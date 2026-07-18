@@ -69,21 +69,35 @@ function displayProductInfo(productInfo) {
     `;
 }
 
+function displayError(message) {
+    const content = document.querySelector('.product_info_content');
+    content.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px;">
+            <h2>404 - Không tìm thấy sản phẩm</h2>
+            <p>${message}</p>
+            <a href="/">Quay về trang chủ</a>
+        </div>
+    `;
+}
+
 async function getProductInfo() {
   try {
-    
-
     const response = await fetch(`/api/products/${productId}/info`);
+
+    if (response.status === 404) {
+      displayError(`Sản phẩm "<strong>${productId}</strong>" không tồn tại.`);
+      return;
+    }
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
     }
 
-
     const productInfo = await response.json();
     displayProductInfo(productInfo);
         
   } catch (error) {
+    displayError('Đã xảy ra lỗi khi tải sản phẩm. Vui lòng thử lại sau.');
     console.error('Có lỗi xảy ra:', error);
   }
 }
