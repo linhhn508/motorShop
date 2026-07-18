@@ -5,7 +5,15 @@
         "price": 197,
         "category": "Yên",
         "stock": 10,
-        "detail": "Yên đôi cho xe Triumph Speed 400, chất liệu da cao cấp, thiết kế thể thao, phù hợp cho cả người lái và hành khách."
+        "product": {
+            "overall": {
+                "brand": "Triumph",
+                "made_in": "Anh",
+                "material": "Da cao cấp",
+                "color": "Đen"
+            },
+            "detail": "Yên đôi cho xe Triumph Speed 400, chất liệu da cao cấp, thiết kế thể thao, phù hợp cho cả người lái và hành khách."
+        }
     },
     {
         "id": "xi-nhan-led-koso",
@@ -13,7 +21,15 @@
         "price": 363,
         "category": "Đèn",
         "stock": 3,
-        "detail": "Xi nhan LED Koso, thiết kế hiện đại, ánh sáng mạnh, dễ lắp đặt."
+        "product": {
+            "overall": {
+                "brand": "KOSO",
+                "made_in": "Đài Loan",
+                "material": "Nhôm, nhựa ABS",
+                "color": "Đen"
+            },
+            "detail": "Xi nhan LED KOSO thiết kế hiện đại, ánh sáng LED sắc nét, tiết kiệm điện, dễ lắp đặt trên hầu hết các dòng xe phổ thông và phân khối lớn."
+        }
     },
     {
         "id": "po-akrapovic-r1",
@@ -21,7 +37,15 @@
         "price": 358,
         "category": "Pô xe",
         "stock": 5,
-        "detail": "Pô Akrapovic cho xe R1, chất liệu thép không gỉ, âm thanh thể thao, tăng hiệu suất động cơ."
+        "product": {
+            "overall": {
+                "brand": "Akrapovic",
+                "made_in": "Slovenia",
+                "material": "Thép không gỉ, Titanium",
+                "color": "Bạc"
+            },
+            "detail": "Pô Akrapovic dành cho Yamaha R1, chất liệu titanium cao cấp, âm thanh thể thao đặc trưng, giảm trọng lượng và tăng hiệu suất động cơ đáng kể."
+        }
     },
     {
         "id": "lop-michelin-city-grip-2",
@@ -29,7 +53,15 @@
         "price": 244,
         "category": "Bánh & Lốp",
         "stock": 1,
-        "detail": "Lốp Michelin City Grip 2, độ bền cao, bám đường tốt, phù hợp cho xe tay ga."
+        "product": {
+            "overall": {
+                "brand": "Michelin",
+                "made_in": "Pháp",
+                "material": "Cao su tổng hợp",
+                "color": "Đen"
+            },
+            "detail": "Lốp Michelin City Grip 2 thế hệ mới, bám đường vượt trội trên mọi điều kiện thời tiết, độ bền cao, phù hợp cho xe tay ga đô thị."
+        }
     },
     {
         "id": "heo-dau-brembo-4-pis",
@@ -37,7 +69,15 @@
         "price": 118,
         "category": "Phanh & Thắng",
         "stock": 4,
-        "detail": "Heo dầu Brembo 4 pis, hiệu suất phanh cao, thiết kế chắc chắn, dễ lắp đặt."
+        "product": {
+            "overall": {
+                "brand": "Brembo",
+                "made_in": "Ý",
+                "material": "Nhôm đúc CNC",
+                "color": "Vàng"
+            },
+            "detail": "Heo dầu Brembo 4 piston hiệu suất phanh cao, lực kẹp mạnh mẽ và ổn định, thiết kế đẹp mắt, nâng cấp hoàn hảo cho hệ thống phanh xe phân khối lớn."
+        }
     },
     {
         "id": "phuoc-sau-ohlins-binh-dau",
@@ -45,7 +85,15 @@
         "price": 214,
         "category": "Phuộc & Giảm xóc",
         "stock": 1,
-        "detail": "Phuộc sau Ohlins bình dầu, giảm xóc êm ái, tăng cường khả năng vận hành và ổn định cho xe."
+        "product": {
+            "overall": {
+                "brand": "Öhlins",
+                "made_in": "Thụy Điển",
+                "material": "Nhôm CNC, thép không gỉ",
+                "color": "Vàng"
+            },
+            "detail": "Phuộc sau Öhlins bình dầu tách rời, cho phép điều chỉnh độ nén và độ hoàn, giảm xóc êm ái, tăng cường khả năng vận hành và ổn định trên mọi địa hình."
+        }
     },
     {
         "id": "guong-gu-tay-lai-crg",
@@ -53,7 +101,15 @@
         "price": 444,
         "category": "Gương & Kính",
         "stock": 3,
-        "detail": "Gương gù tay lái CRG, thiết kế hiện đại, dễ lắp đặt, tăng tính thẩm mỹ cho xe."
+        "product": {
+            "overall": {
+                "brand": "CRG",
+                "made_in": "Ý",
+                "material": "Nhôm, kính cường lực",
+                "color": "Đen, bạc"
+            },
+            "detail": "Gương gù tay lái CRG phong cách Italy, thiết kế gọn nhẹ, tầm nhìn rộng, kính chống chói, dễ điều chỉnh góc, phù hợp cho xe naked và sport."
+        }
     },
     {
         "id": "gac-chan-nhom-biker",
@@ -61,7 +117,15 @@
         "price": 459,
         "category": "Đồ chơi CNC & Kiểng",
         "stock": 8,
-        "detail": "Gác chân nhôm Biker, chất liệu nhôm cao cấp, thiết kế thể thao, tăng sự thoải mái khi lái xe."
+        "product": {
+            "overall": {
+                "brand": "Biker",
+                "made_in": "Việt Nam",
+                "material": "Nhôm CNC 6061",
+                "color": "Đen, bạc, đỏ"
+            },
+            "detail": "Gác chân nhôm Biker gia công CNC từ nhôm 6061 cao cấp, bề mặt anodized chống ăn mòn, thiết kế thể thao, tăng sự thoải mái và tính thẩm mỹ cho xe."
+        }
     },
     {
         "id": "nhong-sen-dia-did-vang-428hd",
@@ -69,6 +133,14 @@
         "price": 442,
         "category": "Truyền động",
         "stock": 14,
-        "detail": "Nhông sên dĩa DID vàng 428HD, độ bền cao, truyền động mượt mà, phù hợp cho nhiều loại xe."
+        "product": {
+            "overall": {
+                "brand": "DID",
+                "made_in": "Nhật Bản",
+                "material": "Thép mạ vàng",
+                "color": "Vàng"
+            },
+            "detail": "Bộ nhông sên dĩa DID 428HD mạ vàng, độ bền vượt trội, truyền động mượt mà và ít tiếng ồn, kháng mài mòn cao, phù hợp cho xe số và xe tay côn."
+        }
     }
 ]
