@@ -1,6 +1,6 @@
 services:
   backend_service:
-    image: backend:latest
+    image: custom_backend
     build:
       context: .
       dockerfile: ./infra/service/Dockerfile
@@ -17,15 +17,22 @@ services:
       - backend_network
 
   mongodb:
-    image: mongodb:latest
+    image: custom_mongodb
     build:
       context: ./infra/mongodb
       dockerfile: Dockerfile
     container_name: mongodb
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
     networks:
       - backend_network
 
   minio:
+    image: custom_minio
     build:
       context: ./infra/minio
       dockerfile: Dockerfile
@@ -35,10 +42,16 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     volumes:
       - ./infra/minio/product:/home/image   # host image folder → container
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
     networks:
       - backend_network
 
   frontend:
+    image: custom_frontend
     build:
       context: .
       dockerfile: ./infra/frontend/Dockerfile
