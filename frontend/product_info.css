@@ -1,0 +1,115 @@
+.product_info_container {
+    display: grid;
+    grid-template-areas:
+        "menu product_header"
+        "menu product_content"
+        "menu relate_product";
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: 0.5fr auto auto;
+    gap: 16px;
+    padding: 5px;
+    align-items: start;
+}
+
+
+/* 
+PRODUCT INFO HEADER
+*/
+
+.product_info_container div.product_info_header {
+    grid-area: product_header;
+    border-bottom: 1px solid #000000;
+}
+.product_info_container .product_info_header h3 a{
+    text-decoration: none;
+    color: #ec1313;
+    padding-right: 10px
+}
+
+.product_info_container .product_info_header h3{
+    padding-bottom: 1px;
+    text-align: left;
+}
+
+
+/* 
+    PRODUCT INFO CONTENT
+ */
+.product_info_container div.product_info_content {
+    grid-area: product_content;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+.product_info_container div.overall-info-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: flex-start;
+    max-width: 100%;
+}
+
+.product_info_container div.product_info_content .image-container {
+    display: flex;
+}
+
+.product_info_container div.product_info_content .image-container img{
+    width: 450px;
+    height: auto;
+}
+
+.product_info_container div.product_info_content .overall-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.product_info_container div.product_info_content .overall-info .add-to-cart-btn{
+    background-color: #000000;
+    color:#ffffff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.product_info_container div.product_info_content .overall-info .slogan {
+    padding-left: 0px;
+}
+
+.product_info_container div.product_info_content .overall-info .slogan li {
+    display: flex;
+    align-items: left;
+    gap: 10px;
+    padding: 6px;
+}
+
+.product_info_container div.product_info_content .overall-info .slogan li img{
+    width: 24px;
+}
+
+@media (max-width: 700px) {
+    footer {
+        height: auto;
+        min-height: 240px;
+    }
+
+    .product_info_container div.product_info_content {
+        height: auto;
+        min-height: 240px;
+        flex-direction: column;
+        padding: 30px 20px;
+        align-items: center;
+    }
+}
+
+/* 
+    PRODUCT INFO RELATED
+ */
+
+.product_info_container div.product_info_related {
+    grid-area: relate_product;
+}
