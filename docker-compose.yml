@@ -11,8 +11,11 @@ services:
       - FLASK_APP=app
       - MONGODB_HOST=mongodb
     depends_on:
-      - mongodb
-      - minio
+      mongodb:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
     networks:
       - backend_network
 
@@ -59,9 +62,12 @@ services:
     ports:
       - "8000:80"
     depends_on:
+      mongodb:
+          condition: service_healthy
+      minio:
+          condition: service_healthy
+    depends_on:
       - backend_service
-      - minio
-      - mongodb
     networks:
       - backend_network
 
