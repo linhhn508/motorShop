@@ -1,6 +1,17 @@
 # My Motor Shop
 
-A full-stack web application for a motorcycle parts and accessories store. The frontend displays a product catalog with category filtering and pagination, backed by a Flask REST API that reads from a MongoDB database. Product images are served from a MinIO object store. All services are containerised with Docker Compose.
+A full-stack e-commerce web application for a Vietnamese motorcycle parts and accessories store. Customers can browse a product catalogue, filter by category, paginate results, and view individual product detail pages. All services run in Docker containers orchestrated by Docker Compose.
+
+---
+
+## Features
+
+- Product listing page with category sidebar and pagination
+- Individual product detail pages with dynamic routing (`/product/<id>`)
+- Product images stored in MinIO and served through Nginx
+- REST API backed by Flask and MongoDB
+- Single Nginx entry-point — no CORS configuration needed at the application layer
+- Health checks on MongoDB and MinIO with service dependency ordering
 
 ---
 
@@ -8,13 +19,14 @@ A full-stack web application for a motorcycle parts and accessories store. The f
 
 ```
 Browser
-  └─► Nginx (port 8000)
-        ├─ /             → serves static files (HTML / CSS / JS)
-        ├─ /api/         → reverse-proxied to Flask backend (port 5000)
-        └─ /image/product/ → reverse-proxied to MinIO bucket (port 9000)
+  └─► Nginx :8000
+        ├─ /                → static files  (HTML / CSS / JS)
+        ├─ /product/<id>    → product detail page (product_info.html)
+        ├─ /api/            → reverse proxy → Flask :5000
+        └─ /image/product/  → reverse proxy → MinIO :9000
 ```
 
-Nginx acts as the single entry-point. The browser never talks directly to the backend or MinIO, so no CORS configuration is required at the application layer.
+All four services share a single Docker bridge network (`backend_network`). MinIO and MongoDB are not exposed to the host.
 
 ---
 
@@ -22,80 +34,86 @@ Nginx acts as the single entry-point. The browser never talks directly to the ba
 
 ```
 webapp_project/
-├── docker-compose.yml        # Orchestrates all services
-├── .env                      # Environment variables (MinIO credentials)
+├── docker-compose.yml
+├── .env                          # MinIO credentials (not committed)
 │
-├── backend/                  # Flask REST API
+├── backend/
 │   ├── app/
-│   │   ├── __init__.py       # Application factory (create_app)
-│   │   ├── main/             # Main blueprint  →  GET /
-│   │   └── products/         # Products blueprint  →  GET|POST|PUT|DELETE /api/products/
-│   └── pyproject.toml        # Python project metadata & dependencies
+│   │   ├── __init__.py           # App factory — initialises PyMongo, registers blueprints
+│   │   ├── main/                 # Main blueprint  →  GET /
+│   │   └── products/             # Products blueprint  →  /api/products/
+│   ├── pyproject.toml            # Dependencies (Flask, flask-pymongo, flask-cors)
+│   └── uv.lock
 │
-├── frontend/                 # Static web UI
-│   ├── index.html            # Main shop page
-│   ├── main.js               # Fetches products from API, renders UI
-│   ├── styles.css            # Stylesheet
-│   ├── nginx.conf            # Nginx config (static files + reverse proxies)
-│   └── assets/               # Static assets bundled into the Nginx image
+├── frontend/
+│   ├── index.html                # Product listing page
+│   ├── nginx.conf                # Nginx routing + reverse proxy config
+│   ├── assets/                   # Icons, banners, placeholder images
+│   ├── css/
+│   │   ├── main.css              # Shared styles (header, footer, grid, menu)
+│   │   └── product_info.css      # Product detail page styles
+│   ├── js/
+│   │   ├── main.js               # Listing page — fetch products, render, paginate
+│   │   └── product_info.js       # Detail page — read URL slug, fetch & render product
+│   └── pages/
+│       └── product_info.html     # Product detail page template
 │
-└── infra/                    # Docker build contexts for each service
+└── infra/
     ├── frontend/
-    │   └── Dockerfile        # Nginx image (copies frontend/ into container)
+    │   └── Dockerfile            # Nginx image — copies frontend/ into container
     ├── mongodb/
     │   ├── Dockerfile
-    │   ├── mongo-init.sh     # Runs mongoimport on first start
-    │   └── products.json     # Seed data (9 products)
+    │   ├── mongo-init.sh         # Runs mongoimport on first start
+    │   └── products.json         # Seed data — 9 products
     ├── minio/
     │   ├── Dockerfile
-    │   ├── minio-init.sh     # Creates bucket, sets public access, seeds images
-    │   └── product/          # Product images bind-mounted into the container
+    │   ├── minio-init.sh         # Creates bucket, sets public read, seeds images
+    │   └── product/              # Product images bind-mounted at runtime
     └── service/
-        └── Dockerfile        # Flask service Docker image
+        └── Dockerfile            # Flask service — python:3.12-slim + uv
 ```
 
 ---
 
 ## Tech Stack
 
-| Layer        | Technology                                              |
-|--------------|---------------------------------------------------------|
-| Frontend     | HTML / CSS / Vanilla JavaScript                         |
-| Web server   | Nginx 1.27 (Alpine)                                     |
-| Backend      | Python 3.12, Flask 3.x, flask-pymongo, flask-cors       |
-| Database     | MongoDB 7.0                                             |
-| Object store | MinIO RELEASE.2025-09-07T16-13-09Z (S3-compatible)      |
-| Packaging    | [uv](https://github.com/astral-sh/uv)                   |
-| Containers   | Docker & Docker Compose                                 |
+| Layer        | Technology                                         |
+|--------------|----------------------------------------------------|
+| Frontend     | HTML / CSS / Vanilla JavaScript                    |
+| Web server   | Nginx 1.27 (Alpine) — static files + reverse proxy |
+| Backend      | Python 3.12, Flask 3.x, flask-pymongo, flask-cors  |
+| Database     | MongoDB 7.0                                        |
+| Object store | MinIO RELEASE.2025-09-07 (S3-compatible)           |
+| Packaging    | [uv](https://github.com/astral-sh/uv)              |
+| Containers   | Docker & Docker Compose                            |
 
 ---
 
 ## Services & Ports
 
-| Service    | Container name | Exposed port(s)      | Description                         |
-|------------|----------------|----------------------|-------------------------------------|
-| `frontend` | `frontend`     | `8000 → 80`          | Nginx (static files + reverse proxy)|
-| `backend_service` | `backend` | `5000 → 5000`     | Flask REST API                      |
-| `minio`    | `minio`        | *(internal only)*    | MinIO — not exposed to host         |
-| `mongodb`  | `mongodb`      | *(internal only)*    | MongoDB — not exposed to host       |
+| Service          | Container  | Host port | Description                          |
+|------------------|------------|-----------|--------------------------------------|
+| `frontend`       | `frontend` | `8000`    | Nginx — serves UI and proxies traffic |
+| `backend_service`| `backend`  | `5000`    | Flask REST API                        |
+| `mongodb`        | `mongodb`  | —         | MongoDB (internal only)              |
+| `minio`          | `minio`    | —         | Object storage (internal only)       |
 
 ---
 
 ## API Endpoints
 
-Base URL (direct): `http://localhost:5000`  
-Via Nginx proxy: `http://localhost:8000/api/`
+Base URL: `http://localhost:5000` (direct) or `http://localhost:8000/api/` (via Nginx)
 
-| Method   | Path                        | Description                    |
-|----------|-----------------------------|--------------------------------|
-| `GET`    | `/`                         | Main blueprint health check    |
-| `GET`    | `/test/`                    | Application factory test page  |
-| `GET`    | `/api/products/`            | List all products              |
-| `GET`    | `/api/products/categories/` | List distinct categories       |
-| `GET`    | `/api/products/info/`       | Product info *(stub)*          |
-| `POST`   | `/api/products/add/`        | Add a product *(stub)*         |
-| `PUT`    | `/api/products/update/`     | Update a product *(stub)*      |
-| `DELETE` | `/api/products/remove/`     | Remove a product *(stub)*      |
+| Method   | Path                              | Description                   |
+|----------|-----------------------------------|-------------------------------|
+| `GET`    | `/`                               | Main blueprint health check   |
+| `GET`    | `/test/`                          | App factory test page         |
+| `GET`    | `/api/products/all/`              | List all products             |
+| `GET`    | `/api/products/categories/`       | List distinct categories      |
+| `GET`    | `/api/products/<product_id>/info` | Get a single product by ID    |
+| `POST`   | `/api/products/add/`              | Add a product *(stub)*        |
+| `PUT`    | `/api/products/update/`           | Update a product *(stub)*     |
+| `DELETE` | `/api/products/remove/`           | Remove a product *(stub)*     |
 
 ---
 
@@ -104,52 +122,50 @@ Via Nginx proxy: `http://localhost:8000/api/`
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/)
-- A `.env` file in the project root with MinIO credentials (see [Environment Variables](#environment-variables))
-
----
+- A `.env` file in the project root (see [Environment Variables](#environment-variables))
 
 ### Option 1 — Docker Compose (recommended)
-
-Builds and starts all four services (frontend, backend, MongoDB, MinIO) on a shared `backend_network`.
 
 ```bash
 docker compose up --build
 ```
 
-| URL                         | Service             |
-|-----------------------------|---------------------|
-| `http://localhost:8000`     | Shop frontend       |
-| `http://localhost:5000`     | Flask API (direct)  |
+| URL                     | What you see           |
+|-------------------------|------------------------|
+| `http://localhost:8000` | Shop frontend          |
+| `http://localhost:5000` | Flask API (direct)     |
 
----
+To tear down and remove all volumes:
+
+```bash
+docker compose down -v
+```
 
 ### Option 2 — Manual Docker builds
 
 ```bash
-# 1. Create a shared network
+# 1. Shared network
 docker network create backend_network
 
 # 2. MongoDB
-docker build -f infra/mongodb/Dockerfile infra/mongodb/ -t custom_mongo
-docker run -d --network backend_network --name mongodb custom_mongo
+docker build -f infra/mongodb/Dockerfile infra/mongodb/ -t custom_mongodb
+docker run -d --network backend_network --name mongodb custom_mongodb
 
 # 3. MinIO
 docker build -f infra/minio/Dockerfile infra/minio/ -t custom_minio
-docker run -d --network backend_network -p 9000:9000 -p 9001:9001 --name minio \
+docker run -d --network backend_network --name minio \
   -v ./infra/minio/product:/home/image \
   -e MINIO_ROOT_USER=<user> -e MINIO_ROOT_PASSWORD=<password> custom_minio
 
 # 4. Backend
-docker build -f infra/service/Dockerfile . -t backend
+docker build -f infra/service/Dockerfile . -t custom_backend
 docker run -d --network backend_network -p 5000:5000 --name backend \
-  -e MONGODB_HOST=mongodb:27017 backend
+  -e MONGODB_HOST=mongodb:27017 custom_backend
 
 # 5. Frontend
-docker build -f infra/frontend/Dockerfile . -t frontend
-docker run -d --network backend_network -p 8000:80 --name frontend frontend
+docker build -f infra/frontend/Dockerfile . -t custom_frontend
+docker run -d --network backend_network -p 8000:80 --name frontend custom_frontend
 ```
-
----
 
 ### Option 3 — Local development (backend only)
 
@@ -159,7 +175,7 @@ Requires a running MongoDB instance on `localhost:27017`.
 cd backend
 pip install uv
 uv sync
-MONGODB_HOST=localhost:27017 uv run flask run
+MONGODB_HOST=localhost:27017 uv run flask run -h 0.0.0.0 -p 5000
 ```
 
 ---
@@ -168,36 +184,47 @@ MONGODB_HOST=localhost:27017 uv run flask run
 
 - **Database:** `my_web_app`
 - **Collection:** `products`
-- On first startup the MongoDB container automatically imports `infra/mongodb/products.json` via `mongoimport`.
-- The seed file contains **9 products** across multiple motorcycle-parts categories.
+- MongoDB seeds itself on first start via `mongoimport` with `infra/mongodb/products.json`
+- Contains **9 products** across categories: Yên, Đèn, Pô xe, Bánh & Lốp, Phanh & Thắng, Phuộc & Giảm xóc, Gương & Kính, Đồ chơi CNC & Kiểng, Truyền động
 
-Each product document follows this schema:
+### Product Schema
 
 ```json
 {
-  "id": 1,
+  "id": "product-slug",
   "name": "Product name",
   "price": 197,
-  "category": "Category name"
+  "category": "Category name",
+  "stock": 10,
+  "product": {
+    "overall": {
+      "brand": "Brand",
+      "made_in": "Country",
+      "material": "Material",
+      "color": "Color"
+    },
+    "detail": "Full product description"
+  }
 }
 ```
 
-Product images are stored separately in MinIO under the `product-image` bucket and served through Nginx at `/image/product/<id>/thumbnail.png`.
+Product images are stored in MinIO under the `product-image` bucket and served at `/image/product/<id>/thumbnail.png`.
 
 ---
 
 ## Environment Variables
 
-Create a `.env` file in the project root before running Docker Compose:
+Create a `.env` file in the project root:
 
 ```dotenv
 MINIO_ROOT_USER=your_minio_user
 MINIO_ROOT_PASSWORD=your_minio_password
 ```
 
-| Variable              | Service  | Description                                  | Default (compose)  |
-|-----------------------|----------|----------------------------------------------|--------------------|
-| `MONGODB_HOST`        | Backend  | MongoDB host and port (`host:port`)          | `mongodb`          |
-| `FLASK_APP`           | Backend  | Flask application entry point                | `app`              |
-| `MINIO_ROOT_USER`     | MinIO    | MinIO admin username                         | set in `.env`      |
-| `MINIO_ROOT_PASSWORD` | MinIO    | MinIO admin password                         | set in `.env`      |
+| Variable              | Service  | Description                         |
+|-----------------------|----------|-------------------------------------|
+| `FLASK_APP`           | Backend  | Flask application entry point       |
+| `MONGODB_HOST`        | Backend  | MongoDB host (`host:port`)          |
+| `MINIO_ROOT_USER`     | MinIO    | MinIO admin username                |
+| `MINIO_ROOT_PASSWORD` | MinIO    | MinIO admin password                |
+
