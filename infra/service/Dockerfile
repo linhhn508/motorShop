@@ -15,4 +15,4 @@ RUN uv sync
 
 COPY backend/app ./app
 
-CMD ["uv", "run", "--", "flask", "run", "-h", "0.0.0.0", "-p", "5000"]
+CMD ["uv", "run", "--", "gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:create_app()"]
