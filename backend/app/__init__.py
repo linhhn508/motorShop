@@ -7,7 +7,7 @@ mongo = PyMongo()
 
 def create_app():
     app = Flask(__name__)
-    app.config["MONGO_URI"] = f"mongodb://{os.environ['MONGODB_HOST']}/my_web_app"
+    app.config["MONGO_URI"] = f"mongodb://{os.environ['MONGO_INITDB_ROOT_USERNAME']}:{os.environ['MONGO_INITDB_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
     
     #CORS enable here, enabling cross-origin requests for all routes and origins
     #CORS(app)

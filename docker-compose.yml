@@ -10,6 +10,8 @@ services:
     environment:
       - FLASK_APP=app
       - MONGODB_HOST=mongodb
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     depends_on:
       mongodb:
         condition: service_healthy
@@ -25,6 +27,9 @@ services:
       context: ./infra/mongodb
       dockerfile: Dockerfile
     container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
