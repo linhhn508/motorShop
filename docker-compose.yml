@@ -51,10 +51,12 @@ services:
     volumes:
       - ./infra/minio/product:/home/image   # host image folder → container
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      # Dont' need mc alias set, just use the local host and port with the credentials
+      # If image uploaded successfully, mc ls local/product-image will return the list of images in the bucket -> exit 0, otherwise exit 1
+      test: ["CMD-SHELL", "MC_HOST_local=http://$MINIO_ROOT_USER:$MINIO_ROOT_PASSWORD@localhost:9000 mc ls local/product-image"]
       interval: 5s
       timeout: 5s
-      retries: 30
+      retries: 10
     networks:
       - backend_network
 
