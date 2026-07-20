@@ -2,7 +2,7 @@ from app.products import bp
 from flask import jsonify
 from app import mongo
 
-@bp.route('/all/', methods=['GET'])
+@bp.route('/', methods=['GET'])
 def index():
     productList = []
     productQuery = mongo.db.products.find({}, {"_id": False})

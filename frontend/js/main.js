@@ -96,7 +96,7 @@ nextBtn.addEventListener("click", () => {
 
 async function getProductList() {
   try {
-    const response = await fetch('/api/products/all/');
+    const response = await fetch('/api/products/');
 
     if (!response.ok) {
       throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
