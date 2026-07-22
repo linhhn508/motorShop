@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Phan hoi - My Motor Shop</title>
+    <link rel="icon" type="image/x-icon" href="../assets/prototype.ico">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <header id="header">
+        <div id="search-container">
+            <a href="/">
+                <img src="../assets/prototype.png" alt="My Motor Shop">
+            </a>
+            <input type="text" placeholder="Input something.." name="search">
+            <button type="submit"><i class="fa fa-search"></i>Search</button>
+        </div>
+        <div id="nav-container">
+            <nav>
+                <a href="/">Homepage</a>
+                <a href="/blog">Blog</a>
+                <a href="/contact">Contact</a>
+                <a href="/feedback" class="active">Feedback</a>
+            </nav>
+        </div>
+        <div id="header-banner">
+            <img src="../assets/capture.png">
+            <ul>
+                <p>GIAO HANG TOAN QUOC<br>Shipcode theo yeu cau</p>
+                <p>DIEN THOAI<br>036 591 3732</p>
+                <p>CHAT VOI CHUNG TOI<br>036 591 3732</p>
+                <p>MUA BAN, KY GUI<br>Xe va cac san pham lien quan</p>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-container">
+            <div class="page-header">
+                <h2>Phan hoi khach hang</h2>
+                <p>Y kien cua ban giup chung toi ngay cang hoan thien hon</p>
+            </div>
+
+            <div class="feedback-layout">
+                <div class="feedback-form-wrapper">
+                    <h3>Gui danh gia cua ban</h3>
+                    <form class="feedback-form" id="feedbackForm" novalidate>
+                        <div class="form-group">
+                            <label for="fb-name">Ho va ten <span class="required">*</span></label>
+                            <input type="text" id="fb-name" name="name" placeholder="Nguyen Van A" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fb-product">San pham / Dich vu da su dung</label>
+                            <input type="text" id="fb-product" name="product" placeholder="Vi du: Lop Michelin City Grip 2">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Muc do hai long <span class="required">*</span></label>
+                            <div class="star-rating" id="starRating">
+                                <span class="star" data-value="1">&#9733;</span>
+                                <span class="star" data-value="2">&#9733;</span>
+                                <span class="star" data-value="3">&#9733;</span>
+                                <span class="star" data-value="4">&#9733;</span>
+                                <span class="star" data-value="5">&#9733;</span>
+                            </div>
+                            <input type="hidden" id="fb-rating" name="rating" value="0">
+                            <span class="rating-label" id="ratingLabel">Chua danh gia</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fb-category">Danh muc phan hoi</label>
+                            <select id="fb-category" name="category">
+                                <option value="">-- Chon danh muc --</option>
+                                <option value="product_quality">Chat luong san pham</option>
+                                <option value="service">Dich vu khach hang</option>
+                                <option value="delivery">Giao hang</option>
+                                <option value="price">Gia ca</option>
+                                <option value="website">Website</option>
+                                <option value="other">Khac</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fb-message">Noi dung phan hoi <span class="required">*</span></label>
+                            <textarea id="fb-message" name="message" rows="5" placeholder="Chia se trai nghiem cua ban voi chung toi..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fb-suggest">De xuat cai thien (neu co)</label>
+                            <textarea id="fb-suggest" name="suggestion" rows="3" placeholder="Ban muon chung toi cai thien dieu gi?"></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Gui phan hoi</button>
+                    </form>
+                </div>
+
+                <div class="reviews-wrapper">
+                    <h3>Danh gia tu khach hang</h3>
+
+                    <div class="review-summary">
+                        <div class="review-avg">
+                            <span class="avg-score">4.8</span>
+                            <div class="avg-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                            <span class="avg-count">Dua tren 128 danh gia</span>
+                        </div>
+                        <div class="review-bars">
+                            <div class="review-bar-row"><span>5&#9733;</span><div class="bar"><div class="bar-fill" style="width:80%"></div></div><span>80%</span></div>
+                            <div class="review-bar-row"><span>4&#9733;</span><div class="bar"><div class="bar-fill" style="width:14%"></div></div><span>14%</span></div>
+                            <div class="review-bar-row"><span>3&#9733;</span><div class="bar"><div class="bar-fill" style="width:4%"></div></div><span>4%</span></div>
+                            <div class="review-bar-row"><span>2&#9733;</span><div class="bar"><div class="bar-fill" style="width:1%"></div></div><span>1%</span></div>
+                            <div class="review-bar-row"><span>1&#9733;</span><div class="bar"><div class="bar-fill" style="width:1%"></div></div><span>1%</span></div>
+                        </div>
+                    </div>
+
+                    <div class="review-list">
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>Tran Minh Khoa</strong>
+                                <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                                <span class="review-date">18/07/2026</span>
+                            </div>
+                            <p class="review-product">San pham: Lop Michelin City Grip 2</p>
+                            <p>Chat luong san pham tuyet voi, dung hang chinh hang. Shop tu van nhiet tinh, giao hang nhanh. Se ung ho lan sau!</p>
+                        </div>
+
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>Nguyen Thi Lan</strong>
+                                <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                                <span class="review-date">12/07/2026</span>
+                            </div>
+                            <p class="review-product">San pham: Phuoc sau Ohlins</p>
+                            <p>Minh da tim nhieu cho moi ra duoc hang chinh hang. Shop co day du giay to, tem chinh hang ro rang. Rat tin tuong!</p>
+                        </div>
+
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>Le Hoang Bao</strong>
+                                <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                                <span class="review-date">05/07/2026</span>
+                            </div>
+                            <p class="review-product">Dich vu: Tu van mua hang</p>
+                            <p>Nhan vien tu van rat am hieu ve san pham, giai thich can ke tung chi tiet. Chi hoi cho lau mot chut nhung nhin chung rat on.</p>
+                        </div>
+
+                        <div class="review-item">
+                            <div class="review-header">
+                                <strong>Pham Anh Tuan</strong>
+                                <span class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                                <span class="review-date">28/06/2026</span>
+                            </div>
+                            <p class="review-product">San pham: Heo dau Brembo 4 piston</p>
+                            <p>Giao hang dung hen, dong goi can than. San pham khop hoan toan voi mo ta. Minh rat hai long voi trai nghiem mua sam tai day.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="footer-container">
+            <img src="../assets/background.jpg">
+            <div id="top-left">
+                <ul>
+                    <h3>THONG TIN LIEN HE</h3>
+                    <p>DIA CHI: 345/75 Phan Xich Long, Phuong Cau Kieu, Phu Nhuan, TPHCM</p>
+                    <p>GIO MO CUA: 9:30 AM - 6 PM</p>
+                    <p>HOTLINE TU VAN: 036 591 3732</p>
+                    <p>Email: example@example.com</p>
+                </ul>
+            </div>
+            <div id="top-right">
+                <ul>
+                    <h3>HINH THUC THANH TOAN</h3>
+                    <p>TECHCOMBANK - NGAN HANG THUONG MAI CO</p>
+                    <p>PHAN KI THUONG VIET NAM</p>
+                    <p>Chu TK: HO HOANG LINH</p>
+                    <p>STK: 777777777777777777</p>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const stars = document.querySelectorAll(".star");
+        const ratingInput = document.getElementById("fb-rating");
+        const ratingLabel = document.getElementById("ratingLabel");
+        const labels = ["", "Rat te", "Te", "Binh thuong", "Tot", "Xuat sac"];
+
+        stars.forEach(star => {
+            star.addEventListener("mouseover", () => highlightStars(star.dataset.value));
+            star.addEventListener("mouseout", () => highlightStars(ratingInput.value));
+            star.addEventListener("click", () => {
+                ratingInput.value = star.dataset.value;
+                ratingLabel.textContent = labels[star.dataset.value];
+                highlightStars(star.dataset.value);
+            });
+        });
+
+        function highlightStars(value) {
+            stars.forEach(s => s.classList.toggle("active", s.dataset.value <= value));
+        }
+    </script>
+</body>
+</html>
