@@ -1,10 +1,11 @@
-from app.products import bp
 from flask import jsonify, request
+
 from app import mongo
 from app.middleware import token_required
+from app.products import bp
 
 
-@bp.route('/', methods=['GET'])
+@bp.route("/", methods=["GET"])
 def index():
     productList = []
     productQuery = mongo.db.products.find({}, {"_id": False})
@@ -15,7 +16,7 @@ def index():
     return jsonify(productList)
 
 
-@bp.route('/<product_id>/info', methods=['GET'])
+@bp.route("/<product_id>/info", methods=["GET"])
 def get_product(product_id):
     product = mongo.db.products.find_one({"id": product_id}, {"_id": False})
     if product:
@@ -24,31 +25,33 @@ def get_product(product_id):
         return jsonify({"error": "Product not found"}), 404
 
 
-@bp.route('/categories/', methods=['GET'])
+@bp.route("/categories/", methods=["GET"])
 def categories():
     categoryList = mongo.db.products.distinct("category")
     return jsonify(categoryList)
 
 
-@bp.route('/search', methods=['GET'])
+@bp.route("/search", methods=["GET"])
 def search():
-    query = request.args.get('q')
+    query = request.args.get("q")
     if not query:
         return jsonify({"error": "Query parameter 'q' is required"}), 400
 
     results = list(
         mongo.db.products.find(
-            {"$or": [
-                {"name": {"$regex": query, "$options": "i"}},
-                {"category": {"$regex": query, "$options": "i"}},
-            ]},
+            {
+                "$or": [
+                    {"name": {"$regex": query, "$options": "i"}},
+                    {"category": {"$regex": query, "$options": "i"}},
+                ]
+            },
             {"_id": False},
         )
     )
     return jsonify(results)
 
 
-@bp.route('/add/', methods=['POST'])
+@bp.route("/add/", methods=["POST"])
 @token_required
 def add():
     data = request.get_json()
@@ -68,7 +71,7 @@ def add():
     return jsonify({"message": "Product added", "id": data["id"]}), 201
 
 
-@bp.route('/update/', methods=['PUT'])
+@bp.route("/update/", methods=["PUT"])
 @token_required
 def update():
     data = request.get_json()
@@ -86,7 +89,7 @@ def update():
     return jsonify({"message": "Product updated"}), 200
 
 
-@bp.route('/remove/', methods=['DELETE'])
+@bp.route("/remove/", methods=["DELETE"])
 @token_required
 def remove():
     data = request.get_json()

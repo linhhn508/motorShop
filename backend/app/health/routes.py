@@ -1,5 +1,6 @@
-from app.health import bp
 from flask import jsonify
+
+from app.health import bp
 
 
 @bp.route("", methods=["GET"])

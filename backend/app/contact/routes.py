@@ -47,10 +47,6 @@ def _send_ses_email(data):
         Destination={"ToAddresses": [current_app.config["SES_RECIPIENT_EMAIL"]]},
         Message={
             "Subject": {"Data": f"Contact Form: {data['name']}"},
-            "Body": {
-                "Text": {
-                    "Data": f"Name: {data['name']}\nEmail: {data['email']}\n\nMessage:\n{data['message']}"
-                }
-            },
+            "Body": {"Text": {"Data": f"Name: {data['name']}\nEmail: {data['email']}\n\nMessage:\n{data['message']}"}},
         },
     )

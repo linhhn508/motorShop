@@ -3,3 +3,6 @@ target-version = "py312"
 
 [lint]
 select = ["E", "F", "W", "I"]
+
+[lint.per-file-ignores]
+"app/*/__init__.py" = ["E402", "F401"]

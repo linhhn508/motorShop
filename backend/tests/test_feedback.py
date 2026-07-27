@@ -4,11 +4,13 @@ import json
 def test_submit_feedback(client, mock_db):
     response = client.post(
         "/api/feedback",
-        data=json.dumps({
-            "name": "Test User",
-            "rating": 5,
-            "comment": "Great shop!",
-        }),
+        data=json.dumps(
+            {
+                "name": "Test User",
+                "rating": 5,
+                "comment": "Great shop!",
+            }
+        ),
         content_type="application/json",
     )
     assert response.status_code == 201
@@ -32,11 +34,13 @@ def test_submit_feedback_missing_fields(client):
 def test_submit_feedback_invalid_rating(client):
     response = client.post(
         "/api/feedback",
-        data=json.dumps({
-            "name": "Test",
-            "rating": 6,
-            "comment": "Hello",
-        }),
+        data=json.dumps(
+            {
+                "name": "Test",
+                "rating": 6,
+                "comment": "Hello",
+            }
+        ),
         content_type="application/json",
     )
     assert response.status_code == 400
@@ -45,11 +49,13 @@ def test_submit_feedback_invalid_rating(client):
 def test_submit_feedback_rating_must_be_int(client):
     response = client.post(
         "/api/feedback",
-        data=json.dumps({
-            "name": "Test",
-            "rating": "five",
-            "comment": "Hello",
-        }),
+        data=json.dumps(
+            {
+                "name": "Test",
+                "rating": "five",
+                "comment": "Hello",
+            }
+        ),
         content_type="application/json",
     )
     assert response.status_code == 400
