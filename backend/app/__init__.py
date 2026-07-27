@@ -23,6 +23,9 @@ def create_app():
     from app.products import bp as products_bp
     app.register_blueprint(products_bp, url_prefix='/api/products')
 
+    from app.health import bp as health_bp
+    app.register_blueprint(health_bp, url_prefix='/api/health')
+
     @app.route('/test/')
     def test_page():
         return '<h1>Testing the Flask Application Factory Pattern</h1>'
