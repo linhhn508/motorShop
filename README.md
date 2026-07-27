@@ -1,6 +1,6 @@
 # My Motor Shop
 
-A full-stack e-commerce web application for a Vietnamese motorcycle parts and accessories store. Customers can browse a product catalogue, filter by category, paginate results, and view individual product detail pages. All services run in Docker containers orchestrated by Docker Compose.
+A full-stack e-commerce web application for a Vietnamese motorcycle parts and accessories store. Customers can browse a product catalogue, filter by category, search products, and view individual product detail pages. All services run in Docker containers orchestrated by Docker Compose.
 
 ---
 
@@ -8,10 +8,16 @@ A full-stack e-commerce web application for a Vietnamese motorcycle parts and ac
 
 - Product listing page with category sidebar and pagination
 - Individual product detail pages with dynamic routing (`/product/<id>`)
+- Product search by name or category
+- Contact form with email support (AWS SES in production)
+- Customer feedback/review submission with star ratings
+- JWT-authenticated admin CRUD operations (add, update, remove products)
 - Product images stored in MinIO and served through Nginx
 - REST API backed by Flask and MongoDB
+- Structured JSON logging for CloudWatch compatibility
 - Single Nginx entry-point — no CORS configuration needed at the application layer
 - Health checks on MongoDB and MinIO with service dependency ordering
+- Comprehensive test suite (29 tests) with pytest
 
 ---
 
@@ -33,16 +39,33 @@ All four services share a single Docker bridge network (`backend_network`). MinI
 ## Project Structure
 
 ```
-webapp_project/
+motorShop/
 ├── docker-compose.yml
-├── .env                          # MinIO credentials (not committed)
+├── .env                          # Credentials (not committed)
+├── .env.example                  # Template for required env vars
 │
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py           # App factory — initialises PyMongo, registers blueprints
+│   │   ├── middleware.py         # JWT @token_required decorator
+│   │   ├── logging_config.py    # Structured JSON log formatter
 │   │   ├── main/                 # Main blueprint  →  GET /
-│   │   └── products/             # Products blueprint  →  /api/products/
-│   ├── pyproject.toml            # Dependencies (Flask, flask-pymongo, flask-cors)
+│   │   ├── products/             # Products blueprint  →  /api/products/
+│   │   ├── auth/                 # Auth blueprint  →  POST /api/auth/login
+│   │   ├── contact/              # Contact blueprint  →  POST /api/contact
+│   │   ├── feedback/             # Feedback blueprint  →  POST /api/feedback
+│   │   └── health/               # Health blueprint  →  GET /api/health
+│   ├── tests/
+│   │   ├── conftest.py           # Shared test fixtures (app, client, mock db)
+│   │   ├── test_routes.py        # Product listing/detail/category tests
+│   │   ├── test_products_crud.py # CRUD endpoint tests
+│   │   ├── test_search.py        # Search endpoint tests
+│   │   ├── test_auth.py          # JWT auth tests
+│   │   ├── test_contact.py       # Contact form tests
+│   │   ├── test_feedback.py      # Feedback submission tests
+│   │   └── test_health.py        # Health check tests
+│   ├── pyproject.toml            # Dependencies (Flask, PyJWT, boto3, pytest, ruff)
+│   ├── ruff.toml                 # Linter/formatter config
 │   └── uv.lock
 │
 ├── frontend/
@@ -51,12 +74,16 @@ webapp_project/
 │   ├── assets/                   # Icons, banners, placeholder images
 │   ├── css/
 │   │   ├── main.css              # Shared styles (header, footer, grid, menu)
+│   │   ├── pages.css             # Blog, contact, feedback page styles
 │   │   └── product_info.css      # Product detail page styles
 │   ├── js/
 │   │   ├── main.js               # Listing page — fetch products, render, paginate
 │   │   └── product_info.js       # Detail page — read URL slug, fetch & render product
 │   └── pages/
-│       └── product_info.html     # Product detail page template
+│       ├── product_info.html     # Product detail page
+│       ├── blog.html             # Blog page
+│       ├── contact.html          # Contact form page
+│       └── feedback.html         # Feedback/review page
 │
 └── infra/
     ├── frontend/
@@ -77,26 +104,28 @@ webapp_project/
 
 ## Tech Stack
 
-| Layer        | Technology                                         |
-|--------------|----------------------------------------------------|
-| Frontend     | HTML / CSS / Vanilla JavaScript                    |
-| Web server   | Nginx 1.27 (Alpine) — static files + reverse proxy |
-| Backend      | Python 3.12, Flask 3.x, flask-pymongo, flask-cors  |
-| Database     | MongoDB 7.0                                        |
-| Object store | MinIO RELEASE.2025-09-07 (S3-compatible)           |
+| Layer        | Technology                                          |
+|--------------|-----------------------------------------------------|
+| Frontend     | HTML / CSS / Vanilla JavaScript                     |
+| Web server   | Nginx 1.27 (Alpine) — static files + reverse proxy  |
+| Backend      | Python 3.12, Flask 3.x, flask-pymongo, PyJWT, boto3 |
+| Database     | MongoDB 7.0                                         |
+| Object store | MinIO RELEASE.2025-09-07 (S3-compatible)            |
+| Testing      | pytest, mongomock                                   |
+| Linting      | ruff                                                |
 | Packaging    | [uv](https://github.com/astral-sh/uv)              |
-| Containers   | Docker & Docker Compose                            |
+| Containers   | Docker & Docker Compose                             |
 
 ---
 
 ## Services & Ports
 
-| Service          | Container  | Host port | Description                          |
-|------------------|------------|-----------|--------------------------------------|
-| `frontend`       | `frontend` | `8000`    | Nginx — serves UI and proxies traffic |
-| `backend_service`| `backend`  | `5000`    | Flask REST API                        |
-| `mongodb`        | `mongodb`  | —         | MongoDB (internal only)              |
-| `minio`          | `minio`    | —         | Object storage (internal only)       |
+| Service           | Container  | Host port | Description                           |
+|-------------------|------------|-----------|---------------------------------------|
+| `frontend`        | `frontend` | `8000`    | Nginx — serves UI and proxies traffic |
+| `backend_service` | `backend`  | `5000`    | Flask REST API                        |
+| `mongodb`         | `mongodb`  | —         | MongoDB (internal only)               |
+| `minio`           | `minio`    | —         | Object storage (internal only)        |
 
 ---
 
@@ -104,16 +133,29 @@ webapp_project/
 
 Base URL: `http://localhost:5000` (direct) or `http://localhost:8000/api/` (via Nginx)
 
-| Method   | Path                              | Description                   |
-|----------|-----------------------------------|-------------------------------|
-| `GET`    | `/`                               | Main blueprint health check   |
-| `GET`    | `/test/`                          | App factory test page         |
-| `GET`    | `/api/products/all/`              | List all products             |
-| `GET`    | `/api/products/categories/`       | List distinct categories      |
-| `GET`    | `/api/products/<product_id>/info` | Get a single product by ID    |
-| `POST`   | `/api/products/add/`              | Add a product *(stub)*        |
-| `PUT`    | `/api/products/update/`           | Update a product *(stub)*     |
-| `DELETE` | `/api/products/remove/`           | Remove a product *(stub)*     |
+### Public Endpoints
+
+| Method | Path                              | Description                      |
+|--------|-----------------------------------|----------------------------------|
+| `GET`  | `/`                               | Main blueprint health check      |
+| `GET`  | `/api/health`                     | ALB health check                 |
+| `GET`  | `/api/products/`                  | List all products                |
+| `GET`  | `/api/products/categories/`       | List distinct categories         |
+| `GET`  | `/api/products/<product_id>/info` | Get a single product by ID       |
+| `GET`  | `/api/products/search?q=<query>`  | Search products by name/category |
+| `POST` | `/api/auth/login`                 | Admin login — returns JWT token  |
+| `POST` | `/api/contact`                    | Submit contact form              |
+| `POST` | `/api/feedback`                   | Submit feedback with star rating |
+
+### Protected Endpoints (require JWT)
+
+| Method   | Path                     | Description       |
+|----------|--------------------------|-------------------|
+| `POST`   | `/api/products/add/`     | Add a new product |
+| `PUT`    | `/api/products/update/`  | Update a product  |
+| `DELETE` | `/api/products/remove/`  | Remove a product  |
+
+Protected endpoints require an `Authorization: Bearer <token>` header. Obtain a token via `POST /api/auth/login`.
 
 ---
 
@@ -127,13 +169,15 @@ Base URL: `http://localhost:5000` (direct) or `http://localhost:8000/api/` (via 
 ### Option 1 — Docker Compose (recommended)
 
 ```bash
+cp .env.example .env
+# Edit .env and fill in all values
 docker compose up --build
 ```
 
-| URL                     | What you see           |
-|-------------------------|------------------------|
-| `http://localhost:8000` | Shop frontend          |
-| `http://localhost:5000` | Flask API (direct)     |
+| URL                     | What you see       |
+|-------------------------|--------------------|
+| `http://localhost:8000` | Shop frontend      |
+| `http://localhost:5000` | Flask API (direct) |
 
 To tear down and remove all volumes:
 
@@ -141,33 +185,7 @@ To tear down and remove all volumes:
 docker compose down -v
 ```
 
-### Option 2 — Manual Docker builds
-
-```bash
-# 1. Shared network
-docker network create backend_network
-
-# 2. MongoDB
-docker build -f infra/mongodb/Dockerfile infra/mongodb/ -t custom_mongodb
-docker run -d --network backend_network --name mongodb custom_mongodb
-
-# 3. MinIO
-docker build -f infra/minio/Dockerfile infra/minio/ -t custom_minio
-docker run -d --network backend_network --name minio \
-  -v ./infra/minio/product:/home/image \
-  -e MINIO_ROOT_USER=<user> -e MINIO_ROOT_PASSWORD=<password> custom_minio
-
-# 4. Backend
-docker build -f infra/service/Dockerfile . -t custom_backend
-docker run -d --network backend_network -p 5000:5000 --name backend \
-  -e MONGODB_HOST=mongodb:27017 custom_backend
-
-# 5. Frontend
-docker build -f infra/frontend/Dockerfile . -t custom_frontend
-docker run -d --network backend_network -p 8000:80 --name frontend custom_frontend
-```
-
-### Option 3 — Local development (backend only)
+### Option 2 — Local development (backend only)
 
 Requires a running MongoDB instance on `localhost:27017`.
 
@@ -175,7 +193,31 @@ Requires a running MongoDB instance on `localhost:27017`.
 cd backend
 pip install uv
 uv sync
-MONGODB_HOST=localhost:27017 uv run flask run -h 0.0.0.0 -p 5000
+# Set required env vars
+export MONGO_INITDB_ROOT_USERNAME=your_user
+export MONGO_INITDB_ROOT_PASSWORD=your_password
+export MONGODB_HOST=localhost:27017
+export JWT_SECRET=your-secret-key-at-least-32-bytes
+export ADMIN_USERNAME=admin
+export ADMIN_PASSWORD=your_admin_password
+uv run flask run -h 0.0.0.0 -p 5000
+```
+
+### Running Tests
+
+```bash
+cd backend
+source .venv/bin/activate
+uv run pytest -v
+```
+
+### Linting
+
+```bash
+cd backend
+source .venv/bin/activate
+uv run ruff check app/ tests/
+uv run ruff format app/ tests/
 ```
 
 ---
@@ -183,7 +225,7 @@ MONGODB_HOST=localhost:27017 uv run flask run -h 0.0.0.0 -p 5000
 ## Database
 
 - **Database:** `my_web_app`
-- **Collection:** `products`
+- **Collections:** `products`, `feedback`
 - MongoDB seeds itself on first start via `mongoimport` with `infra/mongodb/products.json`
 - Contains **9 products** across categories: Yên, Đèn, Pô xe, Bánh & Lốp, Phanh & Thắng, Phuộc & Giảm xóc, Gương & Kính, Đồ chơi CNC & Kiểng, Truyền động
 
@@ -214,17 +256,18 @@ Product images are stored in MinIO under the `product-image` bucket and served a
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file from the template:
 
-```dotenv
-MINIO_ROOT_USER=your_minio_user
-MINIO_ROOT_PASSWORD=your_minio_password
+```bash
+cp .env.example .env
 ```
 
-| Variable              | Service  | Description                         |
-|-----------------------|----------|-------------------------------------|
-| `FLASK_APP`           | Backend  | Flask application entry point       |
-| `MONGODB_HOST`        | Backend  | MongoDB host (`host:port`)          |
-| `MINIO_ROOT_USER`     | MinIO    | MinIO admin username                |
-| `MINIO_ROOT_PASSWORD` | MinIO    | MinIO admin password                |
-
+| Variable                     | Service          | Description                              |
+|------------------------------|------------------|------------------------------------------|
+| `MONGO_INITDB_ROOT_USERNAME` | Backend, MongoDB | MongoDB root username                    |
+| `MONGO_INITDB_ROOT_PASSWORD` | Backend, MongoDB | MongoDB root password                    |
+| `JWT_SECRET`                 | Backend          | Secret key for JWT signing (≥32 bytes)   |
+| `ADMIN_USERNAME`             | Backend          | Admin login username                     |
+| `ADMIN_PASSWORD`             | Backend          | Admin login password                     |
+| `MINIO_ROOT_USER`            | MinIO            | MinIO admin username                     |
+| `MINIO_ROOT_PASSWORD`        | MinIO            | MinIO admin password                     |
