@@ -29,6 +29,24 @@ def categories():
     return jsonify(categoryList)
 
 
+@bp.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('q')
+    if not query:
+        return jsonify({"error": "Query parameter 'q' is required"}), 400
+
+    results = list(
+        mongo.db.products.find(
+            {"$or": [
+                {"name": {"$regex": query, "$options": "i"}},
+                {"category": {"$regex": query, "$options": "i"}},
+            ]},
+            {"_id": False},
+        )
+    )
+    return jsonify(results)
+
+
 @bp.route('/add/', methods=['POST'])
 def add():
     data = request.get_json()
