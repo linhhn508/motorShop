@@ -33,6 +33,9 @@ def create_app():
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
+    from app.contact import bp as contact_bp
+    app.register_blueprint(contact_bp, url_prefix='/api/contact')
+
     @app.route('/test/')
     def test_page():
         return '<h1>Testing the Flask Application Factory Pattern</h1>'
