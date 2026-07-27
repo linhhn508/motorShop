@@ -6,6 +6,9 @@ import os
 mongo = PyMongo()
 
 def create_app():
+    from app.logging_config import setup_logging
+    setup_logging()
+
     app = Flask(__name__)
     app.config["MONGO_URI"] = f"mongodb://{os.environ['MONGO_INITDB_ROOT_USERNAME']}:{os.environ['MONGO_INITDB_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
 
