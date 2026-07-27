@@ -8,7 +8,11 @@ mongo = PyMongo()
 def create_app():
     app = Flask(__name__)
     app.config["MONGO_URI"] = f"mongodb://{os.environ['MONGO_INITDB_ROOT_USERNAME']}:{os.environ['MONGO_INITDB_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
-    
+
+    app.config["JWT_SECRET"] = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
+    app.config["ADMIN_USERNAME"] = os.environ.get("ADMIN_USERNAME", "admin")
+    app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD", "admin123")
+
     #CORS enable here, enabling cross-origin requests for all routes and origins
     #CORS(app)
 
@@ -25,6 +29,9 @@ def create_app():
 
     from app.health import bp as health_bp
     app.register_blueprint(health_bp, url_prefix='/api/health')
+
+    from app.auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
     @app.route('/test/')
     def test_page():

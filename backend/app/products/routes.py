@@ -1,6 +1,7 @@
 from app.products import bp
 from flask import jsonify, request
 from app import mongo
+from app.middleware import token_required
 
 
 @bp.route('/', methods=['GET'])
@@ -48,6 +49,7 @@ def search():
 
 
 @bp.route('/add/', methods=['POST'])
+@token_required
 def add():
     data = request.get_json()
     if not data:
@@ -67,6 +69,7 @@ def add():
 
 
 @bp.route('/update/', methods=['PUT'])
+@token_required
 def update():
     data = request.get_json()
     if not data or "id" not in data:
@@ -84,6 +87,7 @@ def update():
 
 
 @bp.route('/remove/', methods=['DELETE'])
+@token_required
 def remove():
     data = request.get_json()
     if not data or "id" not in data:
