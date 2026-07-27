@@ -16,9 +16,9 @@ def create_app():
         f"mongodb://{os.environ['MONGO_INITDB_ROOT_USERNAME']}:{os.environ['MONGO_INITDB_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
     )
 
-    app.config["JWT_SECRET"] = os.environ.get("JWT_SECRET", "dev-secret-change-in-production")
-    app.config["ADMIN_USERNAME"] = os.environ.get("ADMIN_USERNAME", "admin")
-    app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD", "admin123")
+    app.config["JWT_SECRET"] = os.environ["JWT_SECRET"]
+    app.config["ADMIN_USERNAME"] = os.environ["ADMIN_USERNAME"]
+    app.config["ADMIN_PASSWORD"] = os.environ["ADMIN_PASSWORD"]
 
     # CORS enable here, enabling cross-origin requests for all routes and origins
     # CORS(app)

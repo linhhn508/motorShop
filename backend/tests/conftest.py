@@ -19,6 +19,9 @@ def app(mock_db):
     os.environ.setdefault("MONGO_INITDB_ROOT_USERNAME", "test")
     os.environ.setdefault("MONGO_INITDB_ROOT_PASSWORD", "test")
     os.environ.setdefault("MONGODB_HOST", "localhost")
+    os.environ.setdefault("JWT_SECRET", "test-secret-key-at-least-32-bytes!!")
+    os.environ.setdefault("ADMIN_USERNAME", "admin")
+    os.environ.setdefault("ADMIN_PASSWORD", "admin123")
 
     with patch("flask_pymongo.PyMongo.init_app"):
         test_app = create_app()
