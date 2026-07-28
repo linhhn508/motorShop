@@ -3,7 +3,7 @@ services:
     image: custom_backend
     build:
       context: .
-      dockerfile: ./infra/service/Dockerfile
+      dockerfile: ./infra/Dockerfile/service/Dockerfile
     container_name: backend
     ports:
       - "5000:5000"
@@ -27,7 +27,7 @@ services:
   mongodb:
     image: custom_mongodb
     build:
-      context: ./infra/mongodb
+      context: ./infra/Dockerfile/mongodb
       dockerfile: Dockerfile
     container_name: mongodb
     environment:
@@ -45,14 +45,14 @@ services:
   minio:
     image: custom_minio
     build:
-      context: ./infra/minio
+      context: ./infra/Dockerfile/minio
       dockerfile: Dockerfile
     container_name: minio
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     volumes:
-      - ./infra/minio/product:/home/image   # host image folder → container
+      - ./infra/Dockerfile/minio/product:/home/image   # host image folder → container
     healthcheck:
       # Dont' need mc alias set, just use the local host and port with the credentials
       # If image uploaded successfully, mc ls local/product-image will return the list of images in the bucket -> exit 0, otherwise exit 1
@@ -67,7 +67,7 @@ services:
     image: custom_frontend
     build:
       context: .
-      dockerfile: ./infra/frontend/Dockerfile
+      dockerfile: ./infra/Dockerfile/frontend/Dockerfile
     container_name: frontend
     ports:
       - "8000:80"
