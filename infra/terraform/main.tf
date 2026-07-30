@@ -56,3 +56,11 @@ module "ssm" {
   admin_username = var.admin_username
   admin_password = var.admin_password
 }
+
+module "iam" {
+  source              = "./modules/iam"
+  project_name        = var.project_name
+  aws_region          = var.aws_region
+  ssm_parameter_arns  = module.ssm.parameter_arns
+  images_bucket_arn   = module.s3.images_bucket_arn
+}
