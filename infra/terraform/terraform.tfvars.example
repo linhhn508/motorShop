@@ -1,0 +1,8 @@
+aws_region     = "ap-southeast-1"
+project_name   = "motorshop"
+environment    = "production"
+vpc_cidr       = "10.0.0.0/16"
+mongodb_uri    = "mongodb+srv://user:pass@cluster.mongodb.net/my_web_app"
+jwt_secret     = "your-secret-key-at-least-32-bytes-long!!"
+admin_username = "admin"
+admin_password = "your-admin-password"
