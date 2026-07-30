@@ -67,16 +67,16 @@ resource "aws_s3_bucket_policy" "terraform_state" {
         }
       },
       {
-        Effect = "Allow"
-        Action = ["s3:GetObject", "s3:PutObject"]
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject"]
         Resource = "${aws_s3_bucket.terraform_state.arn}/*"
         Principal = {
           AWS = data.aws_caller_identity.current.arn
         }
       },
       {
-        Effect = "Allow"
-        Action = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
         Resource = "${aws_s3_bucket.terraform_state.arn}/*.tflock"
         Principal = {
           AWS = data.aws_caller_identity.current.arn

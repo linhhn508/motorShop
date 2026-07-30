@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "= 6.55.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = "= 0.14.0"
+    }
   }
 
   backend "s3" {
@@ -17,6 +21,8 @@ terraform {
   }
 }
 
+resource "time_static" "creationDate" {}
+
 provider "aws" {
   region = var.aws_region
 
@@ -25,6 +31,7 @@ provider "aws" {
       Project     = var.project_name
       Environment = var.environment
       ManagedBy   = "terraform"
+      CreatedDate = formatdate("DD MMM YYYY hh:mm ZZZ", time_static.creationDate.rfc3339)
     }
   }
 }
@@ -58,9 +65,9 @@ module "ssm" {
 }
 
 module "iam" {
-  source              = "./modules/iam"
-  project_name        = var.project_name
-  aws_region          = var.aws_region
-  ssm_parameter_arns  = module.ssm.parameter_arns
-  images_bucket_arn   = module.s3.images_bucket_arn
+  source             = "./modules/iam"
+  project_name       = var.project_name
+  aws_region         = var.aws_region
+  ssm_parameter_arns = module.ssm.parameter_arns
+  images_bucket_arn  = module.s3.images_bucket_arn
 }
