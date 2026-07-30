@@ -47,3 +47,12 @@ module "s3" {
   project_name = var.project_name
   environment  = var.environment
 }
+
+module "ssm" {
+  source         = "./modules/ssm"
+  project_name   = var.project_name
+  mongodb_uri    = var.mongodb_uri
+  jwt_secret     = var.jwt_secret
+  admin_username = var.admin_username
+  admin_password = var.admin_password
+}

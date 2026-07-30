@@ -22,26 +22,26 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-# variable "mongodb_uri" {
-#   description = "MongoDB Atlas connection string"
-#   type        = string
-#   sensitive   = true
-# }
+variable "mongodb_uri" {
+  description = "MongoDB Atlas connection string"
+  type        = string
+  sensitive   = true
+}
 
-# variable "jwt_secret" {
-#   description = "JWT signing secret (>= 32 bytes)"
-#   type        = string
-#   sensitive   = true
-# }
+variable "jwt_secret" {
+  description = "JWT signing secret (>= 32 bytes)"
+  type        = string
+  sensitive   = true
+}
 
-# variable "admin_username" {
-#   description = "Admin login username"
-#   type        = string
-#   sensitive   = true
-# }
+variable "admin_username" {
+  description = "Admin login username"
+  type        = string
+  sensitive   = true
+}
 
-# variable "admin_password" {
-#   description = "Admin login password"
-#   type        = string
-#   sensitive   = true
-# }
+variable "admin_password" {
+  description = "Admin login password"
+  type        = string
+  sensitive   = true
+}
