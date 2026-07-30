@@ -51,3 +51,37 @@ resource "aws_s3_bucket_public_access_block" "terraform_state" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_policy" "terraform_state" {
+  bucket = aws_s3_bucket.terraform_state.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "s3:ListBucket"
+        Resource = aws_s3_bucket.terraform_state.arn
+        Principal = {
+          AWS = data.aws_caller_identity.current.arn
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = ["s3:GetObject", "s3:PutObject"]
+        Resource = "${aws_s3_bucket.terraform_state.arn}/*"
+        Principal = {
+          AWS = data.aws_caller_identity.current.arn
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
+        Resource = "${aws_s3_bucket.terraform_state.arn}/*.tflock"
+        Principal = {
+          AWS = data.aws_caller_identity.current.arn
+        }
+      }
+    ]
+  })
+}
