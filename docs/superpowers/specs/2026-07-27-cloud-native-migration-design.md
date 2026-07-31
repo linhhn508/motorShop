@@ -27,18 +27,7 @@ Secrets (MongoDB URI, JWT secret, SES config) are stored in **SSM Parameter Stor
 **MongoDB Atlas Free Tier** (512MB) replaces DocumentDB (which starts at ~$50/month). Atlas is set up manually; the connection string goes into SSM.
 
 ### Architecture Diagram
-
-```
-Users → CloudFront → S3 (frontend static files)
-                   → S3 (product images)
-                   → ALB → ECS Fargate (Flask backend)
-                                ↓
-                           MongoDB Atlas
-                           SSM Parameter Store
-                           SES (email)
-                           CloudWatch (logs/metrics)
-```
-
+![MotorShop Architecture](../../diagrams/motorshop-architecture-flow.svg)
 ---
 
 ## 2. CI/CD Pipelines
