@@ -1,10 +1,20 @@
-resource "aws_ssm_parameter" "mongodb_uri" {
-  name  = "/${var.project_name}/mongodb-uri"
+resource "aws_ssm_parameter" "mongodb_username" {
+  name  = "/${var.project_name}/mongodb-username"
   type  = "SecureString"
-  value = var.mongodb_uri
+  value = var.mongodb_username
 
   tags = {
-    Name = "${var.project_name}-mongodb-uri"
+    Name = "${var.project_name}-mongodb-username"
+  }
+}
+
+resource "aws_ssm_parameter" "mongodb_password" {
+  name  = "/${var.project_name}/mongodb-password"
+  type  = "SecureString"
+  value = var.mongodb_password
+
+  tags = {
+    Name = "${var.project_name}-mongodb-password"
   }
 }
 

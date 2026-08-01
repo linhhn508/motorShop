@@ -53,13 +53,25 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name  = "FLASK_ENV"
           value = var.environment
+        },
+        {
+          name  = "DEPLOY_PRODUCTION"
+          value = true
+        },
+        {
+          name  = "MONGODB_HOST"
+          value = var.mongodb_host
         }
       ]
 
       secrets = [
         {
-          name      = "MONGO_URI"
-          valueFrom = var.ssm_parameter_arns.mongodb_uri
+          name      = "MONGO_ROOT_USERNAME"
+          valueFrom = var.ssm_parameter_arns.mongodb_root_user
+        },
+        {
+          name      = "MONGO_ROOT_PASSWORD"
+          valueFrom = var.ssm_parameter_arns.mongodb_root_password
         },
         {
           name      = "JWT_SECRET"

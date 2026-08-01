@@ -2,7 +2,12 @@ variable "project_name" {
   type = string
 }
 
-variable "mongodb_uri" {
+variable "mongodb_username" {
+  type      = string
+  sensitive = true
+}
+
+variable "mongodb_password" {
   type      = string
   sensitive = true
 }

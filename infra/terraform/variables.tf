@@ -22,8 +22,20 @@ variable "vpc_cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "mongodb_uri" {
+variable "mongodb_host" {
   description = "MongoDB Atlas connection string"
+  type        = string
+  sensitive   = true
+}
+
+variable "mongodb_username" {
+  description = "MongoDB Atlas username"
+  type        = string
+  sensitive   = true
+}
+
+variable "mongodb_password" {
+  description = "MongoDB Atlas password"
   type        = string
   sensitive   = true
 }

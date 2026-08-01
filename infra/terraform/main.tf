@@ -56,20 +56,21 @@ module "s3" {
 }
 
 module "ssm" {
-  source         = "./modules/ssm"
-  project_name   = var.project_name
-  mongodb_uri    = var.mongodb_uri
-  jwt_secret     = var.jwt_secret
-  admin_username = var.admin_username
-  admin_password = var.admin_password
+  source           = "./modules/ssm"
+  project_name     = var.project_name
+  mongodb_username = var.mongodb_username
+  mongodb_password = var.mongodb_password
+  jwt_secret       = var.jwt_secret
+  admin_username   = var.admin_username
+  admin_password   = var.admin_password
 }
 
 module "iam" {
-  source              = "./modules/iam"
-  project_name        = var.project_name
-  aws_region          = var.aws_region
-  ssm_parameter_arns  = module.ssm.parameter_arns
-  images_bucket_arn   = module.s3.images_bucket_arn
+  source             = "./modules/iam"
+  project_name       = var.project_name
+  aws_region         = var.aws_region
+  ssm_parameter_arns = module.ssm.parameter_arns
+  images_bucket_arn  = module.s3.images_bucket_arn
 }
 
 module "ecs" {
@@ -85,10 +86,12 @@ module "ecs" {
   task_role_arn           = module.iam.task_role_arn
   ecr_repository_url      = module.ecr.repository_url
   container_image_tag     = var.container_image_tag
+  mongodb_host            = var.mongodb_host
   ssm_parameter_arns = {
-    mongodb_uri    = module.ssm.parameter_arns[0]
-    jwt_secret     = module.ssm.parameter_arns[1]
-    admin_username = module.ssm.parameter_arns[2]
-    admin_password = module.ssm.parameter_arns[3]
+    mongodb_root_user     = module.ssm.parameter_arns[0]
+    mongodb_root_password = module.ssm.parameter_arns[1]
+    jwt_secret            = module.ssm.parameter_arns[2]
+    admin_username        = module.ssm.parameter_arns[3]
+    admin_password        = module.ssm.parameter_arns[4]
   }
 }
