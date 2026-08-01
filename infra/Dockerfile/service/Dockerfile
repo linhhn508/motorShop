@@ -1,9 +1,8 @@
 FROM python:3.12-slim
 
-ARG MONGODB_HOST
-
 ENV FLASK_APP=app
-ENV MONGODB_HOST=${MONGODB_HOST}
+
+ENV DEPLOY_PRODUCTION=false
 
 WORKDIR /web-service
 
@@ -14,5 +13,7 @@ COPY backend/pyproject.toml backend/uv.lock ./
 RUN uv sync
 
 COPY backend/app ./app
+
+EXPOSE 5000
 
 CMD ["uv", "run", "--", "gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:create_app()"]

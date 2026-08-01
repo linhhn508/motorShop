@@ -57,13 +57,3 @@ output "ecs_service_name" {
   description = "ECS service name"
   value       = module.ecs.service_name
 }
-
-output "task_execution_role_arn" {
-  description = "ECS task execution role ARN"
-  value       = module.iam.task_execution_role_arn
-}
-
-output "task_role_arn" {
-  description = "ECS task role ARN"
-  value       = module.iam.task_role_arn
-}

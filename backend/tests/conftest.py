@@ -16,8 +16,8 @@ def mock_db():
 
 @pytest.fixture
 def app(mock_db):
-    os.environ.setdefault("MONGO_INITDB_ROOT_USERNAME", "test")
-    os.environ.setdefault("MONGO_INITDB_ROOT_PASSWORD", "test")
+    os.environ.setdefault("MONGO_ROOT_USERNAME", "test")
+    os.environ.setdefault("MONGO_ROOT_PASSWORD", "test")
     os.environ.setdefault("MONGODB_HOST", "localhost")
     os.environ.setdefault("JWT_SECRET", "test-secret-key-at-least-32-bytes!!")
     os.environ.setdefault("ADMIN_USERNAME", "admin")

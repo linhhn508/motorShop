@@ -12,9 +12,14 @@ def create_app():
     setup_logging()
 
     app = Flask(__name__)
-    app.config["MONGO_URI"] = (
-        f"mongodb://{os.environ['MONGO_INITDB_ROOT_USERNAME']}:{os.environ['MONGO_INITDB_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
-    )
+
+    # Support both Atlas (single MONGO_URI) and local Docker (individual vars)
+    if os.environ.get("DEPLOY_PRODUCTION") == "true":
+        app.config["MONGO_URI"] = f"mongodb+srv://{os.environ['MONGO_ROOT_USERNAME']}:{os.environ['MONGO_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?retryWrites=true&w=majority"
+    else:
+        app.config["MONGO_URI"] = (
+            f"mongodb://{os.environ['MONGO_ROOT_USERNAME']}:{os.environ['MONGO_ROOT_PASSWORD']}@{os.environ['MONGODB_HOST']}/my_web_app?authSource=admin"
+        )
 
     app.config["JWT_SECRET"] = os.environ["JWT_SECRET"]
     app.config["ADMIN_USERNAME"] = os.environ["ADMIN_USERNAME"]
