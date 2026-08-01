@@ -45,3 +45,9 @@ variable "admin_password" {
   type        = string
   sensitive   = true
 }
+
+variable "container_image_tag" {
+  description = "Docker image tag for backend deployment"
+  type        = string
+  default     = "latest"
+}

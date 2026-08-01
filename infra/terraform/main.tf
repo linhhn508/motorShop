@@ -65,9 +65,30 @@ module "ssm" {
 }
 
 module "iam" {
-  source             = "./modules/iam"
-  project_name       = var.project_name
-  aws_region         = var.aws_region
-  ssm_parameter_arns = module.ssm.parameter_arns
-  images_bucket_arn  = module.s3.images_bucket_arn
+  source              = "./modules/iam"
+  project_name        = var.project_name
+  aws_region          = var.aws_region
+  ssm_parameter_arns  = module.ssm.parameter_arns
+  images_bucket_arn   = module.s3.images_bucket_arn
+}
+
+module "ecs" {
+  source                  = "./modules/ecs"
+  project_name            = var.project_name
+  environment             = var.environment
+  aws_region              = var.aws_region
+  vpc_id                  = module.networking.vpc_id
+  public_subnet_ids       = module.networking.public_subnet_ids
+  alb_security_group_id   = module.networking.alb_security_group_id
+  ecs_security_group_id   = module.networking.ecs_security_group_id
+  task_execution_role_arn = module.iam.task_execution_role_arn
+  task_role_arn           = module.iam.task_role_arn
+  ecr_repository_url      = module.ecr.repository_url
+  container_image_tag     = var.container_image_tag
+  ssm_parameter_arns = {
+    mongodb_uri    = module.ssm.parameter_arns[0]
+    jwt_secret     = module.ssm.parameter_arns[1]
+    admin_username = module.ssm.parameter_arns[2]
+    admin_password = module.ssm.parameter_arns[3]
+  }
 }
