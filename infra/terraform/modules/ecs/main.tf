@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "backend" {
         },
         {
           name  = "DEPLOY_PRODUCTION"
-          value = true
+          value = "true"
         },
         {
           name  = "MONGODB_HOST"
