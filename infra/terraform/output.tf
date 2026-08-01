@@ -42,3 +42,28 @@ output "task_role_arn" {
   description = "ECS task role ARN"
   value       = module.iam.task_role_arn
 }
+
+output "alb_dns_name" {
+  description = "ALB DNS name — use this to reach the backend"
+  value       = module.ecs.alb_dns_name
+}
+
+output "ecs_cluster_name" {
+  description = "ECS cluster name"
+  value       = module.ecs.cluster_name
+}
+
+output "ecs_service_name" {
+  description = "ECS service name"
+  value       = module.ecs.service_name
+}
+
+output "task_execution_role_arn" {
+  description = "ECS task execution role ARN"
+  value       = module.iam.task_execution_role_arn
+}
+
+output "task_role_arn" {
+  description = "ECS task role ARN"
+  value       = module.iam.task_role_arn
+}
