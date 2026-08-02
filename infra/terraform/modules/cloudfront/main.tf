@@ -28,6 +28,39 @@ resource "aws_cloudfront_function" "strip_images_prefix" {
   EOF
 }
 
+# --- CloudFront Function: URL rewrite for multi-page app ---
+resource "aws_cloudfront_function" "url_rewrite" {
+  name    = "${var.project_name}-url-rewrite"
+  runtime = "cloudfront-js-2.0"
+  comment = "Rewrite clean URLs to actual S3 keys"
+  publish = true
+  code    = <<-EOF
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      // /blog, /contact, /feedback -> /pages/<name>.html
+      if (uri.match(/^\/(blog|contact|feedback)$/)) {
+        request.uri = '/pages' + uri + '.html';
+        return request;
+      }
+
+      // /product/<slug> -> /pages/product_info.html
+      if (uri.match(/^\/product\//)) {
+        request.uri = '/pages/product_info.html';
+        return request;
+      }
+
+      // If URI has no extension and is not root, try .html
+      if (uri !== '/' && uri.indexOf('.') === -1) {
+        request.uri = uri + '.html';
+      }
+
+      return request;
+    }
+  EOF
+}
+
 # --- CloudFront Distribution ---
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
@@ -75,6 +108,11 @@ resource "aws_cloudfront_distribution" "main" {
       cookies {
         forward = "none"
       }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.url_rewrite.arn
     }
 
     min_ttl     = 0
