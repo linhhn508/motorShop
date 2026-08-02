@@ -13,6 +13,21 @@ resource "aws_cloudfront_origin_access_control" "images" {
   signing_protocol                  = "sigv4"
 }
 
+# --- CloudFront Function: Strip /images/ prefix ---
+resource "aws_cloudfront_function" "strip_images_prefix" {
+  name    = "${var.project_name}-strip-images-prefix"
+  runtime = "cloudfront-js-2.0"
+  comment = "Strip /images/ prefix before forwarding to S3"
+  publish = true
+  code    = <<-EOF
+    function handler(event) {
+      var request = event.request;
+      request.uri = request.uri.replace(/^\/images/, '');
+      return request;
+    }
+  EOF
+}
+
 # --- CloudFront Distribution ---
 resource "aws_cloudfront_distribution" "main" {
   enabled             = true
@@ -81,6 +96,11 @@ resource "aws_cloudfront_distribution" "main" {
       cookies {
         forward = "none"
       }
+    }
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.strip_images_prefix.arn
     }
 
     min_ttl     = 0
