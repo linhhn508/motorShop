@@ -40,7 +40,7 @@ function displayPage(page) {
             <li style="list-style: none;">
                 <div class="product-item">
                     <a href="/product/${product.id}">
-                        <img src="/image/product/${product.id}/thumbnail.png" alt="${product.name}">
+                        <img src="/images/${product.id}/thumbnail.png" alt="${product.name}">
                         <h4>${product.name}</h4></a>
                     <p>${product.price} VNĐ</p>
                 </div>

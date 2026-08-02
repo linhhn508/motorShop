@@ -46,7 +46,7 @@ function displayProductInfo(productInfo) {
     `;
 
     productImage.innerHTML = `
-        <img src="/image/product/${productInfo.id}/thumbnail.png" alt="${productInfo.name}">
+        <img src="/images/${productInfo.id}/thumbnail.png" alt="${productInfo.name}">
     `;
 
     overallInfo.innerHTML = `
