@@ -97,3 +97,16 @@ module "ecs" {
     admin_password        = module.ssm.parameter_arns[4]
   }
 }
+
+module "cloudfront" {
+  source                               = "./modules/cloudfront"
+  project_name                         = var.project_name
+  environment                          = var.environment
+  frontend_bucket_id                   = module.s3.frontend_bucket_id
+  frontend_bucket_arn                  = module.s3.frontend_bucket_arn
+  frontend_bucket_regional_domain_name = module.s3.frontend_bucket_regional_domain_name
+  images_bucket_id                     = module.s3.images_bucket_id
+  images_bucket_arn                    = module.s3.images_bucket_arn
+  images_bucket_regional_domain_name   = module.s3.images_bucket_regional_domain_name
+  alb_dns_name                         = module.ecs.alb_dns_name
+}

@@ -57,3 +57,13 @@ output "ecs_service_name" {
   description = "ECS service name"
   value       = module.ecs.service_name
 }
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = module.cloudfront.distribution_id
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront domain name — the app URL"
+  value       = module.cloudfront.distribution_domain_name
+}
