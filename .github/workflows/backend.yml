@@ -58,11 +58,11 @@ jobs:
 
     env:
       MONGODB_HOST: localhost
-      MONGO_INITDB_ROOT_USERNAME: testuser
-      MONGO_INITDB_ROOT_PASSWORD: testpass
-      JWT_SECRET: test-secret-key-at-least-32-bytes-long!!
-      ADMIN_USERNAME: testadmin
-      ADMIN_PASSWORD: testpassword
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: test
+      JWT_SECRET: test-secret-key-at-least-32-bytes!!
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: admin123
 
     steps:
       - name: Checkout code
