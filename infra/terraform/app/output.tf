@@ -8,21 +8,6 @@ output "public_subnet_ids" {
   value       = module.networking.public_subnet_ids
 }
 
-output "ecr_repository_url" {
-  description = "ECR repository URL"
-  value       = module.ecr.repository_url
-}
-
-output "frontend_bucket_name" {
-  description = "S3 bucket for frontend static files"
-  value       = module.s3.frontend_bucket_name
-}
-
-output "images_bucket_name" {
-  description = "S3 bucket for product images"
-  value       = module.s3.images_bucket_name
-}
-
 output "alb_security_group_id" {
   description = "Security group ID for ALB"
   value       = module.networking.alb_security_group_id
