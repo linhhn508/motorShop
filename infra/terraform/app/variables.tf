@@ -78,3 +78,8 @@ variable "images_s3_bucket_name" {
   description = "S3 bucket name for images"
   type        = string
 }
+
+variable "alarm_email" {
+  description = "Email address for CloudWatch alarm notifications"
+  type        = string
+}

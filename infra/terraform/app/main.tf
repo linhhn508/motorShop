@@ -103,3 +103,15 @@ module "cloudfront" {
   images_bucket_regional_domain_name   = data.aws_s3_bucket.images.bucket_regional_domain_name
   alb_dns_name                         = module.ecs.alb_dns_name
 }
+
+module "monitoring" {
+  source                  = "./modules/monitoring"
+  project_name            = var.project_name
+  environment             = var.environment
+  aws_region              = var.aws_region
+  alarm_email             = var.alarm_email
+  ecs_cluster_name        = module.ecs.cluster_name
+  ecs_service_name        = module.ecs.service_name
+  alb_arn_suffix          = module.ecs.alb_arn_suffix
+  target_group_arn_suffix = module.ecs.target_group_arn_suffix
+}

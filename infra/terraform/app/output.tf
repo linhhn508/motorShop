@@ -52,3 +52,13 @@ output "cloudfront_domain_name" {
   description = "CloudFront domain name — the app URL"
   value       = module.cloudfront.distribution_domain_name
 }
+
+output "sns_topic_arn" {
+  description = "SNS topic ARN for alarm notifications"
+  value       = module.monitoring.sns_topic_arn
+}
+
+output "dashboard_name" {
+  description = "CloudWatch dashboard name"
+  value       = module.monitoring.dashboard_name
+}
