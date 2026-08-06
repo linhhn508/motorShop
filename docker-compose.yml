@@ -1,5 +1,6 @@
 services:
   backend_service:
+    env_file: .env
     image: custom_backend
     build:
       context: .
@@ -21,11 +22,12 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-
+    restart: unless-stopped
     networks:
       - backend_network
 
   mongodb:
+    env_file: .env
     image: custom_mongodb
     build:
       context: ./infra/Dockerfile/mongodb
@@ -40,10 +42,12 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s
+    restart: unless-stopped
     networks:
       - backend_network
 
   minio:
+    env_file: .env
     image: custom_minio
     build:
       context: ./infra/Dockerfile/minio
@@ -61,6 +65,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
     networks:
       - backend_network
 
@@ -79,6 +84,7 @@ services:
           condition: service_healthy
       backend_service:
           condition: service_started
+    restart: unless-stopped
     networks:
       - backend_network
 

@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "= 6.55.0"
     }
-    time = {
-      source  = "hashicorp/time"
-      version = "= 0.14.0"
-    }
   }
 
   backend "s3" {
@@ -21,10 +17,6 @@ terraform {
   }
 }
 
-resource "time_offset" "gmt_plus_7" {
-  offset_hours = 7
-}
-
 provider "aws" {
   region = var.aws_region
 
@@ -33,7 +25,6 @@ provider "aws" {
       Project     = var.project_name
       Environment = var.environment
       ManagedBy   = "terraform"
-      CreatedDate = formatdate("DD MMM YYYY hh:mm ZZZ", time_offset.gmt_plus_7.rfc3339)
     }
   }
 }
@@ -46,16 +37,6 @@ module "networking" {
   aws_region   = var.aws_region
 }
 
-module "ecr" {
-  source       = "./modules/ecr"
-  project_name = var.project_name
-}
-
-module "s3" {
-  source       = "./modules/s3"
-  project_name = var.project_name
-  environment  = var.environment
-}
 
 module "ssm" {
   source           = "./modules/ssm"
@@ -67,12 +48,24 @@ module "ssm" {
   admin_password   = var.admin_password
 }
 
+data "aws_s3_bucket" "images" {
+  bucket = var.images_s3_bucket_name
+}
+
+data "aws_s3_bucket" "frontend" {
+  bucket = var.frontend_s3_bucket_name
+}
+
+data "aws_ecr_repository" "backend" {
+  name = var.ecr_repository_name
+}
+
 module "iam" {
   source             = "./modules/iam"
   project_name       = var.project_name
   aws_region         = var.aws_region
   ssm_parameter_arns = module.ssm.parameter_arns
-  images_bucket_arn  = module.s3.images_bucket_arn
+  images_bucket_arn  = data.aws_s3_bucket.images.arn
 }
 
 module "ecs" {
@@ -86,7 +79,7 @@ module "ecs" {
   ecs_security_group_id   = module.networking.ecs_security_group_id
   task_execution_role_arn = module.iam.task_execution_role_arn
   task_role_arn           = module.iam.task_role_arn
-  ecr_repository_url      = module.ecr.repository_url
+  ecr_repository_url      = data.aws_ecr_repository.backend.repository_url
   container_image_tag     = var.container_image_tag
   mongodb_host            = var.mongodb_host
   ssm_parameter_arns = {
@@ -102,11 +95,11 @@ module "cloudfront" {
   source                               = "./modules/cloudfront"
   project_name                         = var.project_name
   environment                          = var.environment
-  frontend_bucket_id                   = module.s3.frontend_bucket_id
-  frontend_bucket_arn                  = module.s3.frontend_bucket_arn
-  frontend_bucket_regional_domain_name = module.s3.frontend_bucket_regional_domain_name
-  images_bucket_id                     = module.s3.images_bucket_id
-  images_bucket_arn                    = module.s3.images_bucket_arn
-  images_bucket_regional_domain_name   = module.s3.images_bucket_regional_domain_name
+  frontend_bucket_id                   = data.aws_s3_bucket.frontend.id
+  frontend_bucket_arn                  = data.aws_s3_bucket.frontend.arn
+  frontend_bucket_regional_domain_name = data.aws_s3_bucket.frontend.bucket_regional_domain_name
+  images_bucket_id                     = data.aws_s3_bucket.images.id
+  images_bucket_arn                    = data.aws_s3_bucket.images.arn
+  images_bucket_regional_domain_name   = data.aws_s3_bucket.images.bucket_regional_domain_name
   alb_dns_name                         = module.ecs.alb_dns_name
 }

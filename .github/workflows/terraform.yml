@@ -11,8 +11,7 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1
-  TF_WORKING_DIR: infra/terraform
-
+  TF_WORKING_DIR: infra/terraform/app
 
 jobs:
   format:
@@ -64,5 +63,8 @@ jobs:
           TF_VAR_mongodb_password: ${{ secrets.MONGODB_PASSWORD }}
           TF_VAR_admin_username: ${{ secrets.ADMIN_USERNAME }}
           TF_VAR_admin_password: ${{ secrets.ADMIN_PASSWORD }}
+          TF_VAR_ecr_repository_name: ${{ secrets.AWS_ECR_REPOSITORY }}
+          TF_VAR_frontend_s3_bucket_name: ${{ secrets.AWS_FRONTEND_S3_BUCKET }}
+          TF_VAR_images_s3_bucket_name: ${{ secrets.AWS_IMAGES_S3_BUCKET }}
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform plan -no-color

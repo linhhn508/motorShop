@@ -63,3 +63,18 @@ variable "container_image_tag" {
   type        = string
   default     = "latest"
 }
+
+variable "ecr_repository_name" {
+  description = "ECR repository name"
+  type        = string
+}
+
+variable "frontend_s3_bucket_name" {
+  description = "S3 bucket name for frontend"
+  type        = string
+}
+
+variable "images_s3_bucket_name" {
+  description = "S3 bucket name for images"
+  type        = string
+}

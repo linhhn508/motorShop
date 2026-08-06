@@ -1,3 +1,11 @@
+output "repository_url" {
+  value = aws_ecr_repository.backend.repository_url
+}
+
+output "repository_arn" {
+  value = aws_ecr_repository.backend.arn
+}
+
 output "frontend_bucket_name" {
   value = aws_s3_bucket.frontend.id
 }
