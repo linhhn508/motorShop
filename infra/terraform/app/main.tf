@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "= 6.55.0"
     }
-    time = {
-      source  = "hashicorp/time"
-      version = "= 0.14.0"
-    }
   }
 
   backend "s3" {
@@ -21,10 +17,6 @@ terraform {
   }
 }
 
-resource "time_offset" "gmt_plus_7" {
-  offset_hours = 7
-}
-
 provider "aws" {
   region = var.aws_region
 
@@ -33,7 +25,6 @@ provider "aws" {
       Project     = var.project_name
       Environment = var.environment
       ManagedBy   = "terraform"
-      CreatedDate = formatdate("DD MMM YYYY hh:mm ZZZ", time_offset.gmt_plus_7.rfc3339)
     }
   }
 }

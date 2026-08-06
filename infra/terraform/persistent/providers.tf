@@ -21,10 +21,6 @@ terraform {
   }
 }
 
-resource "time_offset" "gmt_plus_7" {
-  offset_hours = 7
-}
-
 provider "aws" {
   region = var.aws_region
 
@@ -32,7 +28,6 @@ provider "aws" {
     tags = {
       Project     = var.project_name
       ManagedBy   = "terraform"
-      CreatedDate = formatdate("DD MMM YYYY hh:mm ZZZ", time_offset.gmt_plus_7.rfc3339)
     }
   }
 }
