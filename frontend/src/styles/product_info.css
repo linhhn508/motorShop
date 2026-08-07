@@ -11,6 +11,12 @@
     align-items: start;
 }
 
+.product_info_container div.menu {
+    grid-area: menu;
+    text-align: center;
+    margin-right: 25px;
+}
+
 /* PRODUCT INFO HEADER */
 
 .product_info_container div.product_info_header {

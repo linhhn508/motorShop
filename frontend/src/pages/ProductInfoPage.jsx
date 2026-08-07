@@ -29,7 +29,7 @@ function ProductInfoPage() {
 
   if (error) {
     return (
-      <div className="container product_info_container">
+      <div className="product_info_container">
         <CategoryMenu />
         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
           <h2>404 - Không tìm thấy sản phẩm</h2>
@@ -42,7 +42,7 @@ function ProductInfoPage() {
 
   if (!product) {
     return (
-      <div className="container product_info_container">
+      <div className="product_info_container">
         <CategoryMenu />
         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
           <p>Đang tải...</p>
@@ -52,7 +52,7 @@ function ProductInfoPage() {
   }
 
   return (
-    <div className="container product_info_container">
+    <div className="product_info_container">
       <CategoryMenu />
       <div className="product_info_header">
         <h3><Link to="/">Trang chủ</Link> &raquo; {product.name}</h3>
@@ -89,9 +89,9 @@ function ProductInfoPage() {
           <h4>Mô tả</h4>
           <div dangerouslySetInnerHTML={{ __html: product.product?.detail }} />
         </div>
-        <div className="product_info_related">
-          <h3>SẢN PHẨM LIÊN QUAN</h3>
-        </div>
+      </div>
+      <div className="product_info_related">
+        <h3>SẢN PHẨM LIÊN QUAN</h3>
       </div>
     </div>
   )
