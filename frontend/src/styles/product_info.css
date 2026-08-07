@@ -11,30 +11,26 @@
     align-items: start;
 }
 
-
-/* 
-PRODUCT INFO HEADER
-*/
+/* PRODUCT INFO HEADER */
 
 .product_info_container div.product_info_header {
     grid-area: product_header;
     border-bottom: 1px solid #000000;
 }
-.product_info_container .product_info_header h3 a{
+
+.product_info_container .product_info_header h3 a {
     text-decoration: none;
     color: #ec1313;
-    padding-right: 10px
+    padding-right: 10px;
 }
 
-.product_info_container .product_info_header h3{
+.product_info_container .product_info_header h3 {
     padding-bottom: 1px;
     text-align: left;
 }
 
+/* PRODUCT INFO CONTENT */
 
-/* 
-    PRODUCT INFO CONTENT
- */
 .product_info_container div.product_info_content {
     grid-area: product_content;
     display: flex;
@@ -58,7 +54,7 @@ PRODUCT INFO HEADER
     flex-shrink: 0;
 }
 
-.product_info_container div.product_info_content .image-container img{
+.product_info_container div.product_info_content .image-container img {
     width: 450px;
     height: auto;
 }
@@ -71,14 +67,14 @@ PRODUCT INFO HEADER
     white-space: nowrap;
 }
 
-.product_info_container div.product_info_content .overall-info h3{
+.product_info_container div.product_info_content .overall-info h3 {
     text-align: center;
     font-size: 30px;
 }
 
-.product_info_container div.product_info_content .overall-info .add-to-cart-btn{
+.product_info_container div.product_info_content .overall-info .add-to-cart-btn {
     background-color: #000000;
-    color:#ffffff;
+    color: #ffffff;
     border: none;
     padding: 10px 20px;
     width: 100%;
@@ -96,16 +92,11 @@ PRODUCT INFO HEADER
     padding: 6px;
 }
 
-.product_info_container div.product_info_content .overall-info .slogan li img{
+.product_info_container div.product_info_content .overall-info .slogan li img {
     width: 24px;
 }
 
 @media (max-width: 1000px) {
-    footer {
-        height: auto;
-        min-height: 240px;
-    }
-
     .product_info_container div.product_info_content {
         height: auto;
         min-height: 240px;
@@ -125,9 +116,7 @@ PRODUCT INFO HEADER
     }
 }
 
-/* 
-    PRODUCT INFO RELATED
- */
+/* PRODUCT INFO RELATED */
 
 .product_info_container div.product_info_related {
     grid-area: relate_product;
