@@ -11,5 +11,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/images/, '/product-image'),
       },
     },
+    host: '0.0.0.0'
   },
 })
