@@ -41,7 +41,8 @@ Browser
 | ALB           | Application Load Balancer in front of ECS        |
 | SSM Parameter Store | Stores secrets (DB creds, JWT, admin login) |
 | VPC           | Networking — 2 public subnets across 2 AZs       |
-| CloudWatch    | Structured JSON logs from ECS tasks              |
+| CloudWatch    | Structured JSON logs + alarms (CPU, 5xx, health) |
+| SNS           | Email notifications for CloudWatch alarms        |
 
 ---
 
@@ -58,6 +59,8 @@ Browser
 - Dual MongoDB support: local Docker instance or MongoDB Atlas (production)
 - Infrastructure as Code with Terraform (modular AWS deployment)
 - CloudFront CDN with S3 origins and ALB backend routing
+- CloudWatch alarms with SNS email notifications (unhealthy tasks, high CPU, 5xx errors)
+- CI/CD pipelines via GitHub Actions (backend, frontend, Terraform)
 - Health checks on MongoDB and MinIO with service dependency ordering
 - Comprehensive test suite (29 tests) with pytest
 
@@ -75,6 +78,8 @@ Browser
 | CDN            | CloudFront (production)                             |
 | Compute        | ECS Fargate (production)                            |
 | IaC            | Terraform (AWS provider 6.55)                       |
+| CI/CD          | GitHub Actions                                      |
+| Monitoring     | CloudWatch alarms + SNS email notifications         |
 | Testing        | pytest, mongomock                                   |
 | Linting        | ruff                                                |
 | Packaging      | [uv](https://github.com/astral-sh/uv)              |
@@ -86,85 +91,44 @@ Browser
 
 ```
 motorShop/
-├── docker-compose.yml
-├── .env                          # Credentials (not committed)
+├── docker-compose.yml            # 4 services: frontend, backend, mongodb, minio
 ├── .env.example                  # Template for required env vars
 │
 ├── backend/
-│   ├── app/
-│   │   ├── __init__.py           # App factory — PyMongo init, blueprint registration
+│   ├── pyproject.toml            # Dependencies & pytest config
+│   ├── ruff.toml                 # Linter/formatter config
+│   ├── app/                      # Flask app factory + blueprints
+│   │   ├── __init__.py           # create_app(), PyMongo init, blueprint registration
 │   │   ├── middleware.py         # JWT @token_required decorator
 │   │   ├── logging_config.py    # Structured JSON log formatter
-│   │   ├── main/                 # Main blueprint  →  GET /
-│   │   ├── products/             # Products blueprint  →  /api/products/
-│   │   ├── auth/                 # Auth blueprint  →  POST /api/auth/login
-│   │   ├── contact/              # Contact blueprint  →  POST /api/contact
-│   │   ├── feedback/             # Feedback blueprint  →  POST /api/feedback
-│   │   └── health/               # Health blueprint  →  GET /api/health
-│   ├── tests/
-│   │   ├── conftest.py           # Shared test fixtures (app, client, mock db)
-│   │   ├── test_routes.py        # Product listing/detail/category tests
-│   │   ├── test_products_crud.py # CRUD endpoint tests
-│   │   ├── test_search.py        # Search endpoint tests
-│   │   ├── test_auth.py          # JWT auth tests
-│   │   ├── test_contact.py       # Contact form tests
-│   │   ├── test_feedback.py      # Feedback submission tests
-│   │   └── test_health.py        # Health check tests
-│   ├── pyproject.toml            # Dependencies (Flask, PyJWT, boto3, pytest, ruff)
-│   └── ruff.toml                 # Linter/formatter config
+│   │   ├── products/             # /api/products/ — CRUD, search, categories
+│   │   ├── auth/                 # /api/auth/login — JWT token issuance
+│   │   ├── contact/              # /api/contact — contact form (SES in prod)
+│   │   ├── feedback/             # /api/feedback — star-rating reviews
+│   │   └── health/               # /api/health — ALB health check
+│   └── tests/                    # 29 tests with pytest + mongomock
 │
 ├── frontend/
 │   ├── index.html                # Product listing page
-│   ├── nginx.conf                # Nginx routing + reverse proxy (local dev)
-│   ├── assets/                   # Icons, banners, placeholder images
-│   ├── css/
-│   │   ├── main.css              # Shared styles (header, footer, grid, menu)
-│   │   ├── pages.css             # Blog, contact, feedback page styles
-│   │   └── product_info.css      # Product detail page styles
-│   ├── js/
-│   │   ├── main.js               # Listing page — fetch products, render, paginate
-│   │   └── product_info.js       # Detail page — read URL slug, fetch & render product
-│   └── pages/
-│       ├── product_info.html     # Product detail page
-│       ├── blog.html             # Blog page
-│       ├── contact.html          # Contact form page
-│       └── feedback.html         # Feedback/review page
+│   ├── nginx.conf                # Nginx routing + reverse proxy config
+│   ├── css/                      # Stylesheets (main, pages, product detail)
+│   ├── js/                       # Client-side logic (listing, product detail)
+│   └── pages/                    # Sub-pages (product detail, blog, contact, feedback)
 │
-├── docs/
-│   └── motorshop-architecture-flow.svg   # Architecture diagram
+├── infra/
+│   ├── Dockerfile/               # Dockerfiles for all 4 services + seed data
+│   └── terraform/
+│       ├── app/                  # Root module + child modules
+│       │   └── modules/          # networking, ecs, cloudfront, s3, iam, ssm, monitoring, ecr
+│       ├── bootstrap/            # One-time S3 state bucket setup
+│       └── persistent/           # ECR + S3 buckets (long-lived resources)
 │
-└── infra/
-    ├── Dockerfile/
-    │   ├── frontend/
-    │   │   └── Dockerfile        # Nginx image — copies frontend/ into container
-    │   ├── mongodb/
-    │   │   ├── Dockerfile
-    │   │   ├── mongo-init.sh     # Runs mongoimport on first start
-    │   │   └── products.json     # Seed data — 9 products
-    │   ├── minio/
-    │   │   ├── Dockerfile
-    │   │   ├── minio-init.sh     # Creates bucket, sets public read, seeds images
-    │   │   └── product/          # Product images bind-mounted at runtime
-    │   └── service/
-    │       └── Dockerfile        # Flask service — python:3.12-slim + uv + gunicorn
-    │
-    └── terraform/
-        ├── main.tf               # Root module — wires all child modules
-        ├── variables.tf          # Input variables (region, secrets, etc.)
-        ├── output.tf             # Exported outputs (URLs, IDs, ARNs)
-        ├── terraform.tfvars.example
-        ├── bootstrap/            # One-time S3 state bucket setup
-        │   ├── main.tf
-        │   ├── variable.tf
-        │   └── output.tf
-        └── modules/
-            ├── networking/       # VPC, subnets, IGW, route tables, security groups
-            ├── ecr/              # Container registry + lifecycle policy
-            ├── ecs/              # Cluster, task definition, service, ALB, target group
-            ├── s3/               # Frontend + product-images buckets
-            ├── cloudfront/       # Distribution with S3 + ALB origins, OAC, CF function
-            ├── iam/              # Task execution role, task role, policies
-            └── ssm/              # SecureString parameters for secrets
+├── .github/workflows/            # CI/CD pipelines
+│   ├── backend.yml               # Lint → Test → Build & Deploy to ECS
+│   ├── frontend.yml              # Deploy to S3 + CloudFront invalidation
+│   └── terraform.yml             # Format check → Plan
+│
+└── docs/                         # Architecture diagram (SVG)
 ```
 
 ---
@@ -217,7 +181,7 @@ Protected endpoints require an `Authorization: Bearer <token>` header. Obtain a 
 - [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/)
 - A `.env` file in the project root (see [Environment Variables](#environment-variables))
 
-### Option 1 — Docker Compose (recommended for local dev)
+### Option 1 — Docker Compose (recommended)
 
 ```bash
 cp .env.example .env
@@ -258,7 +222,6 @@ uv run flask run -h 0.0.0.0 -p 5000
 
 ```bash
 cd backend
-source .venv/bin/activate
 uv run pytest -v
 ```
 
@@ -266,10 +229,23 @@ uv run pytest -v
 
 ```bash
 cd backend
-source .venv/bin/activate
 uv run ruff check app/ tests/
 uv run ruff format app/ tests/
 ```
+
+---
+
+## CI/CD
+
+Three GitHub Actions workflows run on push/PR to `main`, scoped by path:
+
+| Workflow | Trigger paths | Jobs |
+|----------|--------------|------|
+| **Backend** | `backend/**` | Lint (ruff) → Test (pytest + MongoDB service) → Build & Deploy (ECR + ECS) |
+| **Frontend** | `frontend/**` | Sync to S3 → Invalidate CloudFront cache |
+| **Terraform** | `infra/terraform/**` | Format check (`terraform fmt`) → Plan |
+
+All workflows also support `workflow_dispatch` for manual triggers.
 
 ---
 
@@ -287,8 +263,6 @@ Create the S3 bucket for Terraform remote state:
 
 ```bash
 cd infra/terraform/bootstrap
-cp ../terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars
 terraform init
 terraform apply
 ```
@@ -296,7 +270,7 @@ terraform apply
 ### Deploy Infrastructure
 
 ```bash
-cd infra/terraform
+cd infra/terraform/app
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with real values
 terraform init
@@ -335,6 +309,7 @@ aws cloudfront create-invalidation --distribution-id <distribution-id> --paths "
 | `cloudfront`  | Distribution with 3 origins (frontend S3, images S3, ALB)     |
 | `iam`         | Task execution role (ECR + logs + SSM), task role (S3 access) |
 | `ssm`         | SecureString parameters for all secrets                       |
+| `monitoring`  | CloudWatch alarms (unhealthy tasks, high CPU, 5xx) + SNS email |
 
 ---
 
@@ -393,7 +368,7 @@ cp .env.example .env
 
 ### AWS Production (Terraform)
 
-Configure via `infra/terraform/terraform.tfvars`:
+Configure via `infra/terraform/app/terraform.tfvars`:
 
 | Variable              | Description                              |
 |-----------------------|------------------------------------------|
